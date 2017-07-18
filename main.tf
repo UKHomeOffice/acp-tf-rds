@@ -66,7 +66,6 @@ resource "aws_security_group_rule" "out_all" {
 # The database instance itself
 resource "aws_db_instance" "db" {
   name                        = "${var.database_name}"
-
   allocated_storage           = "${var.allocated_storage}"
   allow_major_version_upgrade = "${var.allow_major_version_upgrade}"
   auto_minor_version_upgrade  = "${var.auto_minor_version_upgrade}"
