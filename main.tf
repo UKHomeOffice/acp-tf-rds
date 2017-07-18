@@ -1,17 +1,33 @@
 /**
  * Module usage:
  *
- *      module "some_rds" {
- *        source         = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
+ *      module "rds" {
+ *         source              = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
  *
- *        name            = "my_rds_name"
- *        environment     = "dev"            # by default both Name and Env is added to the tags
- *        dns_zone        = "example.com"
- *        cidr_access     = [ "var.cidr_access" ] # a list of cidr to permit access (defaults 0.0.0.0/0)
- *        tags            = {
- *          Role = "some_tag"
- *        }
- *      }
+ *         name                = "fake"
+ *         allocated_storage   = "20"
+ *         cidr_blocks         = [ "${values(module.compute.cidrs)}" ]
+ *         database_name       = "keycloak"
+ *         database_password   = "password"
+ *         database_port       = "3306"
+ *         database_user       = "root"
+ *         db_parameter_family = "default.mysql5.6"
+ *         dns_zone            = "${var.dns_zone}"
+ *         engine_type         = "MariaDB"
+ *         engine_version      = "10.1.19"
+ *         environment         = "${var.environment}"
+ *         instance_class      =  "db.t2.medium"
+ *         db_parameters       = [
+ *           {
+ *             name  = "character_set_server"
+ *             value = "utf8"
+ *           },
+ *           {
+ *             name  = "character_set_client"
+ *             value = "utf8"
+ *           }
+ *         ]
+ *       }
  *
  */
 

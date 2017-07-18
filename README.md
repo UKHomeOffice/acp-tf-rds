@@ -1,16 +1,32 @@
 Module usage:
 
-     module "some_rds" {
-       source         = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
+     module "rds" {
+        source              = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
 
-       name            = "my_rds_name"
-       environment     = "dev"            # by default both Name and Env is added to the tags
-       dns_zone        = "example.com"
-       cidr_access     = [ "var.cidr_access" ] # a list of cidr to permit access (defaults 0.0.0.0/0)
-       tags            = {
-         Role = "some_tag"
-       }
-     }
+        name                = "fake"
+        allocated_storage   = "20"
+        cidr_blocks         = [ "${values(module.compute.cidrs)}" ]
+        database_name       = "keycloak"
+        database_password   = "password"
+        database_port       = "3306"
+        database_user       = "root"
+        db_parameter_family = "default.mysql5.6"
+        dns_zone            = "${var.dns_zone}"
+        engine_type         = "MariaDB"
+        engine_version      = "10.1.19"
+        environment         = "${var.environment}"
+        instance_class      =  "db.t2.medium"
+        db_parameters       = [
+          {
+            name  = "character_set_server"
+            value = "utf8"
+          },
+          {
+            name  = "character_set_client"
+            value = "utf8"
+          }
+        ]
+      }
 
 
 
@@ -30,21 +46,20 @@ Module usage:
 | database_port | The database port being used by the RDS instance, i.e. 3306, 5342 | string | - | yes |
 | database_user | The username for the RDS to be created | string | `root` | no |
 | db_parameter_family | Parameter group, depends on DB engine used | string | - | yes |
-| db_parameters | A map of database parameters for the RDS instance | string | `<map>` | no |
+| db_parameters | A map of database parameters for the RDS instance | string | `<list>` | no |
 | dns_name | The dns name added the dns zone, else defaults to var.name | string | `` | no |
-| dns_ttl | The dns record type for the RDS instance, defaults to CNAME | string | `CNAME` | no |
+| dns_ttl | The dns record type for the RDS instance, defaults to CNAME | string | `300` | no |
 | dns_type | The dns record type for the RDS instance, defaults to CNAME | string | `CNAME` | no |
 | dns_zone | The required route53 domain name we are added the dns entry to i.e. example.com | string | - | yes |
 | engine_type | Database engine type | string | - | yes |
 | engine_version | Database engine version, depends on engine type | string | - | yes |
 | environment | The environment the RDS is running in i.e. dev, prod etc | string | - | yes |
-| instance_class | Class of RDS instance | string | - | yes |
+| instance_class | Class of RDS instance | string | `db.t2.medium` | no |
 | is_multi_az | Set to true on production | string | `false` | no |
 | name | A descriptive name for the RDS instance | string | - | yes |
 | skip_final_snapshot | If true (default), no snapshot will be made before deleting DB | string | `true` | no |
 | storage_encrypted | Indicates you want the underlining storage to be encrypted | string | `true` | no |
 | storage_type | One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). | string | `standard` | no |
 | subnet_role | A role used to filter out which subnets the RDS should reside, defaults to Role=compute | string | `compute` | no |
-| subnets | List of subnets DB should be available at. It might be one subnet. | list | - | yes |
 | tags | A map of tags to add to all resources | string | `<map>` | no |
 
