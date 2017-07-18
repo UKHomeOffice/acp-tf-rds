@@ -102,6 +102,7 @@ variable "instance_class" {
   description = "Class of RDS instance"
   # Valid values
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html
+  default     = "db.t2.medium"
 }
 
 variable "auto_minor_version_upgrade" {
@@ -116,11 +117,6 @@ variable "allow_major_version_upgrade" {
 
 variable "database_name" {
   description = "The name of the database to create"
-}
-
-variable "subnets" {
-  description = "List of subnets DB should be available at. It might be one subnet."
-  type        = "list"
 }
 
 variable "skip_final_snapshot" {
