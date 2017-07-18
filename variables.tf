@@ -15,14 +15,13 @@ variable "dns_zone" {
   description = "The required route53 domain name we are added the dns entry to i.e. example.com"
 }
 
+variable "database_name" {
+  description = "The name of the database to create"
+}
+
 variable "database_user" {
   description = "The username for the RDS to be created"
   default     = "root"
-}
-
-variable "subnet_role" {
-  description = "A role used to filter out which subnets the RDS should reside, defaults to Role=compute"
-  default     = "compute"
 }
 
 variable "database_password" {
@@ -36,6 +35,11 @@ variable "database_port" {
 variable "cidr_blocks" {
   description = "A list of network cidr block which are permitted acccess"
   default     = [ "0.0.0.0/0" ]
+}
+
+variable "subnet_role" {
+  description = "A role used to filter out which subnets the RDS should reside, defaults to Role=compute"
+  default     = "compute"
 }
 
 variable "dns_type" {
@@ -113,10 +117,6 @@ variable "auto_minor_version_upgrade" {
 variable "allow_major_version_upgrade" {
   description = "Allow major version upgrade"
   default     = false
-}
-
-variable "database_name" {
-  description = "The name of the database to create"
 }
 
 variable "skip_final_snapshot" {
