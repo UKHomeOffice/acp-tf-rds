@@ -49,7 +49,7 @@ variable "dns_type" {
 
 variable "dns_ttl" {
   description = "The dns record type for the RDS instance, defaults to CNAME"
-  default     = "CNAME"
+  default     = "300"
 }
 
 # This is for a custom parameter to be passed to the DB
