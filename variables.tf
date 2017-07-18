@@ -62,7 +62,7 @@ variable "db_parameter_family" {
 
 variable "db_parameters" {
   description = "A map of database parameters for the RDS instance"
-  default     = {}
+  default     = []
 }
 
 variable "is_multi_az" {
