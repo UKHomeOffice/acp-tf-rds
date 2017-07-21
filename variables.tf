@@ -34,7 +34,7 @@ variable "database_port" {
 
 variable "cidr_blocks" {
   description = "A list of network cidr block which are permitted acccess"
-  default     = [ "0.0.0.0/0" ]
+  default     = ["0.0.0.0/0"]
 }
 
 variable "subnet_role" {
@@ -56,6 +56,7 @@ variable "dns_ttl" {
 # We're "cloning" default ones, but we need to specify which should be copied
 variable "db_parameter_family" {
   description = "Parameter group, depends on DB engine used"
+
   # default = "mysql5.6"
   # default = "postgres9.5"
 }
@@ -86,6 +87,7 @@ variable "allocated_storage" {
 
 variable "engine_type" {
   description = "Database engine type"
+
   # Valid types are
   # - mysql
   # - postgres
@@ -97,6 +99,7 @@ variable "engine_type" {
 
 variable "engine_version" {
   description = "Database engine version, depends on engine type"
+
   # For valid engine versions, see:
   # See http://docs.aws.amazon.com/cli/latest/reference/rds/create-db-instance.html
   # --engine-version
@@ -104,9 +107,10 @@ variable "engine_version" {
 
 variable "instance_class" {
   description = "Class of RDS instance"
+
   # Valid values
   # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html
-  default     = "db.t2.medium"
+  default = "db.t2.medium"
 }
 
 variable "auto_minor_version_upgrade" {
