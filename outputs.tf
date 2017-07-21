@@ -1,4 +1,3 @@
-
 #output "rds_instance_id" {
 #  description = "The RDB instance ID we just created"
 #  value       = "${aws_db_instance.db.id}"
@@ -18,3 +17,4 @@
 #  description = "The security group id for the RDS"
 #  value       = "${aws_security_group.db.id}"
 #}
+
