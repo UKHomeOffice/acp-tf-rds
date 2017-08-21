@@ -97,6 +97,7 @@ resource "aws_db_instance" "db" {
   password                    = "${var.database_password}"
   port                        = "${var.database_port}"
   publicly_accessible         = false
+  vpc_security_group_ids      = ["${aws_security_group.db.id}"]
   skip_final_snapshot         = "${var.skip_final_snapshot}"
   storage_encrypted           = "${var.storage_encrypted}"
   storage_type                = "${var.storage_type}"
