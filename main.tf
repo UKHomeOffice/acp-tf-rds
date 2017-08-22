@@ -108,9 +108,11 @@ resource "aws_db_instance" "db" {
 
 # Create the database parameters
 resource "aws_db_parameter_group" "db" {
-  name      = "${var.name}-db-parameters"
-  family    = "${var.db_parameter_family}"
-  parameter = "${var.db_parameters}"
+  name = "${var.name}-db-parameters"
+
+  description = "Database Parameters Group for RDS: ${var.environment}.${var.name}"
+  family      = "${var.db_parameter_family}"
+  parameter   = "${var.db_parameters}"
 
   tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
