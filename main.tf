@@ -132,5 +132,5 @@ resource "aws_route53_record" "dns" {
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
-  records = ["${aws_db_instance.db.endpoint}"]
+  records = ["${aws_db_instance.db.address}"]
 }
