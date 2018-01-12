@@ -31,17 +31,10 @@
  *
  */
 
-# Get the VPC for this instance, we use the environment tag
-data "aws_vpc" "selected" {
-  tags {
-    Env = "${var.environment}"
-  }
-}
-
 # Get a list of subnets the RDS should reside
 data "aws_subnet_ids" "selected" {
-  vpc_id = "${data.aws_vpc.selected.id}"
-  tags   = "${merge(map("Role", var.subnet_role), map("Env", var.environment))}"
+  vpc_id = "${var.vpc_id}"
+  tags   = "${var.subnet_tags}"
 }
 
 # Get the hosting zone
@@ -53,7 +46,7 @@ data "aws_route53_zone" "selected" {
 resource "aws_security_group" "db" {
   name        = "${var.identifier}-sg-rds"
   description = "The security group used to manage access to rds: ${var.identifier}, environment: ${var.environment}"
-  vpc_id      = "${data.aws_vpc.selected.id}"
+  vpc_id      = "${var.vpc_id}"
 
   tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.identifier)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
