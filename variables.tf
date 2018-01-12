@@ -3,6 +3,10 @@ variable "name" {
   default     = ""
 }
 
+variable "identifier" {
+  description = "A unique identifier to the RDS instance for console reference"
+}
+
 variable "environment" {
   description = "The environment the RDS is running in i.e. dev, prod etc"
 }

@@ -54,6 +54,7 @@ Module usage:
 | engine_type | Database engine type | - | yes |
 | engine_version | Database engine version, depends on engine type | - | yes |
 | environment | The environment the RDS is running in i.e. dev, prod etc | - | yes |
+| identifier | A unique identifier to the RDS instance for console reference | - | yes |
 | instance_class | Class of RDS instance | `db.t2.medium` | no |
 | is_multi_az | Set to true on production | `false` | no |
 | name | A descriptive name for the RDS instance (leave blank only when rds requires it to be blank) | `` | no |
