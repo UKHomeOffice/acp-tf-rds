@@ -79,8 +79,39 @@ resource "aws_security_group_rule" "out_all" {
 }
 
 # The database instance itself
-resource "aws_db_instance" "db" {
+resource "aws_db_instance" "db_including_name" {
+  count = "${var.database_name != "" ? 1 : 0}"
+
   name                        = "${var.database_name}"
+  allocated_storage           = "${var.allocated_storage}"
+  allow_major_version_upgrade = "${var.allow_major_version_upgrade}"
+  auto_minor_version_upgrade  = "${var.auto_minor_version_upgrade}"
+  backup_retention_period     = "${var.backup_retention_period}"
+  backup_window               = "${var.backup_window}"
+  copy_tags_to_snapshot       = "${var.copy_tags_to_snapshot}"
+  db_subnet_group_name        = "${aws_db_subnet_group.db.name}"
+  engine                      = "${var.engine_type}"
+  engine_version              = "${var.engine_version}"
+  identifier                  = "${var.name}"
+  instance_class              = "${var.instance_class}"
+  multi_az                    = "${var.is_multi_az}"
+  parameter_group_name        = "${aws_db_parameter_group.db.id}"
+  password                    = "${var.database_password}"
+  port                        = "${var.database_port}"
+  publicly_accessible         = false
+  vpc_security_group_ids      = ["${aws_security_group.db.id}"]
+  skip_final_snapshot         = "${var.skip_final_snapshot}"
+  storage_encrypted           = "${var.storage_encrypted}"
+  storage_type                = "${var.storage_type}"
+  username                    = "${var.database_user}"
+
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+}
+
+# The database instance itself
+resource "aws_db_instance" "db_excluding_name" {
+  count = "${var.database_name == "" ? 1 : 0}"
+
   allocated_storage           = "${var.allocated_storage}"
   allow_major_version_upgrade = "${var.allow_major_version_upgrade}"
   auto_minor_version_upgrade  = "${var.auto_minor_version_upgrade}"
@@ -127,10 +158,22 @@ resource "aws_db_subnet_group" "db" {
 }
 
 # Create a DNS name for the resource
-resource "aws_route53_record" "dns" {
+resource "aws_route53_record" "dns_including_dbname" {
+  count = "${var.database_name != "" ? 1 : 0}"
+
   zone_id = "${data.aws_route53_zone.selected.id}"
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
-  records = ["${aws_db_instance.db.address}"]
+  records = ["${aws_db_instance.db_including_name.address}"]
+}
+
+resource "aws_route53_record" "dns_excluding_dbname" {
+  count = "${var.database_name == "" ? 1 : 0}"
+
+  zone_id = "${data.aws_route53_zone.selected.id}"
+  name    = "${var.dns_name == "" ? var.name : var.dns_name}"
+  type    = "${var.dns_type}"
+  ttl     = "${var.dns_ttl}"
+  records = ["${aws_db_instance.db_excluding_name.address}"]
 }
