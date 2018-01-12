@@ -63,4 +63,4 @@ Module usage:
 | storage_type | One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). | `gp2` | no |
 | subnet_role | A role used to filter out which subnets the RDS should reside, defaults to Role=compute | `compute` | no |
 | tags | A map of tags to add to all resources | `<map>` | no |
-
+| vpc_id | The VPC ID to create the resources within | - | yes |
