@@ -1,5 +1,6 @@
 variable "name" {
-  description = "A descriptive name for the RDS instance"
+  description = "A descriptive name for the RDS instance (leave blank only when rds requires it to be blank)"
+  default     = ""
 }
 
 variable "environment" {
