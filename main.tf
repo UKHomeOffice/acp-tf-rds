@@ -51,11 +51,11 @@ data "aws_route53_zone" "selected" {
 
 # Security Group used to manage access to the RDS instance
 resource "aws_security_group" "db" {
-  name        = "${var.identifier}-sg-rds"
-  description = "The security group used to manage access to rds: ${var.identifier}, environment: ${var.environment}"
+  name        = "${var.name}-sg-rds"
+  description = "The security group used to manage access to rds: ${var.name}, environment: ${var.environment}"
   vpc_id      = "${data.aws_vpc.selected.id}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.identifier)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
 
 # Ingress Rule to permit inbound database port
@@ -92,7 +92,7 @@ resource "aws_db_instance" "db_including_name" {
   db_subnet_group_name        = "${aws_db_subnet_group.db.name}"
   engine                      = "${var.engine_type}"
   engine_version              = "${var.engine_version}"
-  identifier                  = "${var.identifier}"
+  identifier                  = "${var.name}"
   instance_class              = "${var.instance_class}"
   multi_az                    = "${var.is_multi_az}"
   parameter_group_name        = "${aws_db_parameter_group.db.id}"
@@ -105,7 +105,7 @@ resource "aws_db_instance" "db_including_name" {
   storage_type                = "${var.storage_type}"
   username                    = "${var.database_user}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.identifier)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
 
 # The database instance itself
@@ -121,7 +121,7 @@ resource "aws_db_instance" "db_excluding_name" {
   db_subnet_group_name        = "${aws_db_subnet_group.db.name}"
   engine                      = "${var.engine_type}"
   engine_version              = "${var.engine_version}"
-  identifier                  = "${var.identifier}"
+  identifier                  = "${var.name}"
   instance_class              = "${var.instance_class}"
   multi_az                    = "${var.is_multi_az}"
   parameter_group_name        = "${aws_db_parameter_group.db.id}"
@@ -134,27 +134,27 @@ resource "aws_db_instance" "db_excluding_name" {
   storage_type                = "${var.storage_type}"
   username                    = "${var.database_user}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.identifier)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
 
 # Create the database parameters
 resource "aws_db_parameter_group" "db" {
-  name = "${var.identifier}-db-parameters"
+  name = "${var.name}-db-parameters"
 
-  description = "Database Parameters Group for RDS: ${var.environment}.${var.identifier}"
+  description = "Database Parameters Group for RDS: ${var.environment}.${var.name}"
   family      = "${var.db_parameter_family}"
   parameter   = "${var.db_parameters}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.identifier)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
 
 # Create RDS Subnets
 resource "aws_db_subnet_group" "db" {
-  name        = "${var.identifier}-rds"
-  description = "RDS Subnet Group for service: ${var.identifier}, environment: ${var.environment}"
+  name        = "${var.name}-rds"
+  description = "RDS Subnet Group for service: ${var.name}, environment: ${var.environment}"
   subnet_ids  = ["${data.aws_subnet_ids.selected.ids}"]
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.identifier)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
 
 # Create a DNS name for the resource
@@ -162,7 +162,7 @@ resource "aws_route53_record" "dns_including_dbname" {
   count = "${var.database_name != "" ? 1 : 0}"
 
   zone_id = "${data.aws_route53_zone.selected.id}"
-  name    = "${var.dns_name == "" ? var.identifier : var.dns_name}"
+  name    = "${var.dns_name == "" ? var.name : var.dns_name}"
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
   records = ["${aws_db_instance.db_including_name.address}"]
@@ -172,7 +172,7 @@ resource "aws_route53_record" "dns_excluding_dbname" {
   count = "${var.database_name == "" ? 1 : 0}"
 
   zone_id = "${data.aws_route53_zone.selected.id}"
-  name    = "${var.dns_name == "" ? var.identifier : var.dns_name}"
+  name    = "${var.dns_name == "" ? var.name : var.dns_name}"
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
   records = ["${aws_db_instance.db_excluding_name.address}"]
