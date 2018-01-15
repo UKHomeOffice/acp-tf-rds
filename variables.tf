@@ -1,10 +1,5 @@
 variable "name" {
   description = "A descriptive name for the RDS instance (leave blank only when rds requires it to be blank)"
-  default     = ""
-}
-
-variable "identifier" {
-  description = "A unique identifier to the RDS instance for console reference"
 }
 
 variable "environment" {
@@ -22,6 +17,7 @@ variable "dns_zone" {
 
 variable "database_name" {
   description = "The name of the database to create"
+  default     = ""
 }
 
 variable "database_user" {

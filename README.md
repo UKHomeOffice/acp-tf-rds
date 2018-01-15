@@ -41,7 +41,7 @@ Module usage:
 | backup_window | When AWS can run snapshot, can't overlap with maintenance window | `22:00-03:00` | no |
 | cidr_blocks | A list of network cidr block which are permitted acccess | `<list>` | no |
 | copy_tags_to_snapshot | Copy tags from DB to a snapshot | `true` | no |
-| database_name | The name of the database to create | - | yes |
+| database_name | The name of the database to create | `` | no |
 | database_password | The default password for the specified user for RDS | - | yes |
 | database_port | The database port being used by the RDS instance, i.e. 3306, 5342 | - | yes |
 | database_user | The username for the RDS to be created | `root` | no |
@@ -54,10 +54,9 @@ Module usage:
 | engine_type | Database engine type | - | yes |
 | engine_version | Database engine version, depends on engine type | - | yes |
 | environment | The environment the RDS is running in i.e. dev, prod etc | - | yes |
-| identifier | A unique identifier to the RDS instance for console reference | - | yes |
 | instance_class | Class of RDS instance | `db.t2.medium` | no |
 | is_multi_az | Set to true on production | `false` | no |
-| name | A descriptive name for the RDS instance (leave blank only when rds requires it to be blank) | `` | no |
+| name | A descriptive name for the RDS instance (leave blank only when rds requires it to be blank) | - | yes |
 | skip_final_snapshot | If true (default), no snapshot will be made before deleting DB | `true` | no |
 | storage_encrypted | Indicates you want the underlining storage to be encrypted | `true` | no |
 | storage_type | One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). | `gp2` | no |
