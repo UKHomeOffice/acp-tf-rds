@@ -149,3 +149,12 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   default     = {}
 }
+
+variable "vpc_id" {
+  description = "The VPC ID to create the resources within"
+}
+
+variable "subnet_ids" {
+  description = "The list of subnet IDs associated to a vpc"
+  default     = []
+}
