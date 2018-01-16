@@ -139,7 +139,7 @@ resource "aws_db_parameter_group" "db" {
 resource "aws_db_subnet_group" "db" {
   name        = "${var.name}-rds"
   description = "RDS Subnet Group for service: ${var.name}, environment: ${var.environment}"
-  subnet_ids  = "${var.subnet_ids}"
+  subnet_ids  = ["${var.subnet_ids}"]
 
   tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
