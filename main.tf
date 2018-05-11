@@ -67,7 +67,7 @@ resource "aws_security_group_rule" "out_all" {
 
 # The database instance itself
 resource "aws_db_instance" "db_including_name" {
-  count = "${var.database_name != "" ? 1 : 0}"
+  count = "${var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" ? 1 : 0}"
 
   name                        = "${var.database_name}"
   allocated_storage           = "${var.allocated_storage}"
@@ -97,7 +97,7 @@ resource "aws_db_instance" "db_including_name" {
 
 # The database instance itself
 resource "aws_db_instance" "db_excluding_name" {
-  count = "${var.database_name == "" ? 1 : 0}"
+  count = "${var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" ? 1 : 0}"
 
   allocated_storage           = "${var.allocated_storage}"
   allow_major_version_upgrade = "${var.allow_major_version_upgrade}"
@@ -124,11 +124,61 @@ resource "aws_db_instance" "db_excluding_name" {
   tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
 
+# Cluster for Amazon Aurora
+resource "aws_rds_cluster" "aurora_cluster" {
+  # aurora = MySQL 5.6-compatible, aurora-mysql = MySQL 5.7-compatible
+  count = "${var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0}"
+
+  backup_retention_period         = "${var.backup_retention_period}"
+  cluster_identifier              = "${var.name}"
+  database_name                   = "${var.name}"
+  db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.db.id}"
+  db_subnet_group_name            = "${aws_db_subnet_group.db.name}"
+  engine                          = "${var.engine_type}"
+  engine_version                  = "${var.engine_version}"
+  master_password                 = "${var.database_password}"
+  master_username                 = "${var.database_user}"
+  port                            = "${var.database_port}"
+  preferred_backup_window         = "${var.backup_window}"
+  skip_final_snapshot             = "${var.skip_final_snapshot}"
+  storage_encrypted               = "${var.storage_encrypted}"
+  vpc_security_group_ids          = ["${aws_security_group.db.id}"]
+}
+
+# Aurora cluster instance
+resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
+  count = "${var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? var.number_of_aurora_instances : 0}"
+
+  auto_minor_version_upgrade = "${var.auto_minor_version_upgrade}"
+  cluster_identifier         = "${aws_rds_cluster.aurora_cluster.id}"
+  db_subnet_group_name       = "${aws_db_subnet_group.db.name}"
+  db_parameter_group_name    = "${aws_db_parameter_group.db.id}"
+  engine                     = "${var.engine_type}"
+  engine_version             = "${var.engine_version}"
+  identifier                 = "${var.name}${var.number_of_aurora_instances != 1 ? "-${count.index}" : "" }"
+  instance_class             = "${var.instance_class}"
+  publicly_accessible        = false
+  tags                       = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
+}
+
 # Create the database parameters
 resource "aws_db_parameter_group" "db" {
   name = "${var.name}-db-parameters"
 
   description = "Database Parameters Group for RDS: ${var.environment}.${var.name}"
+  family      = "${var.db_parameter_family}"
+  parameter   = "${var.db_parameters}"
+
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+}
+
+# Create the RDS cluster parameters
+resource "aws_rds_cluster_parameter_group" "db" {
+  count = "${var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0}"
+
+  name = "${var.name}-db-parameters"
+
+  description = "Database Parameters Group for RDS cluster: ${var.environment}.${var.name}"
   family      = "${var.db_parameter_family}"
   parameter   = "${var.db_parameters}"
 
@@ -146,7 +196,7 @@ resource "aws_db_subnet_group" "db" {
 
 # Create a DNS name for the resource
 resource "aws_route53_record" "dns_including_dbname" {
-  count = "${var.database_name != "" ? 1 : 0}"
+  count = "${var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" ? 1 : 0}"
 
   zone_id = "${data.aws_route53_zone.selected.id}"
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"
@@ -156,7 +206,7 @@ resource "aws_route53_record" "dns_including_dbname" {
 }
 
 resource "aws_route53_record" "dns_excluding_dbname" {
-  count = "${var.database_name == "" ? 1 : 0}"
+  count = "${var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" ? 1 : 0}"
 
   zone_id = "${data.aws_route53_zone.selected.id}"
   name    = "${var.dns_name == "" ? var.name : var.dns_name}"

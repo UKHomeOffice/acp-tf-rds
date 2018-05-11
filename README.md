@@ -57,6 +57,7 @@ Module usage:
 | instance_class | Class of RDS instance | `db.t2.medium` | no |
 | is_multi_az | Set to true on production | `false` | no |
 | name | A descriptive name for the RDS instance (leave blank only when rds requires it to be blank) | - | yes |
+| number_of_aurora_instances | The number of Aurora instances to create | `1` | no |
 | skip_final_snapshot | If true (default), no snapshot will be made before deleting DB | `true` | no |
 | storage_encrypted | Indicates you want the underlining storage to be encrypted | `true` | no |
 | storage_type | One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). | `gp2` | no |
