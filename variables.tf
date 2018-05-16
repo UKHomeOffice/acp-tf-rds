@@ -158,3 +158,9 @@ variable "subnet_ids" {
   description = "The list of subnet IDs associated to a vpc"
   default     = []
 }
+
+# Set this higher than 1 for read replicas
+variable "number_of_aurora_instances" {
+  description = "The number of Aurora instances to create"
+  default     = 1
+}
