@@ -29,6 +29,29 @@
  *         ]
  *       }
  *
+ *     module "aurora-rds" {
+ *         source                     = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
+ *
+ *         name                       = "aurorafake"
+ *         database_name              = "aurorafake"
+ *         number_of_aurora_instances = "2"
+ *         allocated_storage          = "20"
+ *         backup_retention_period    = "1"
+ *         backup_window              = "22:00-23:59"
+ *         cidr_blocks                = ["${values(var.compute_cidrs)}"]
+ *         vpc_id                     = "${var.vpc_id}"
+ *         subnet_ids                 = ["${data.aws_subnet_ids.private.ids}"]
+ *         database_password          = "password"
+ *         database_port              = "3306"
+ *         database_user              = "root"
+ *         db_parameter_family        = "aurora-mysql5.7"
+ *         dns_zone                   = "${var.dns_zone}"
+ *         engine_type                = "aurora-mysql"
+ *         engine_version             = "5.7"
+ *         environment                = "${var.environment}"
+ *         instance_class             = "db.t2.small"
+ *         storage_encrypted          = "true"
+ *     }
  */
 
 # Get the hosting zone
