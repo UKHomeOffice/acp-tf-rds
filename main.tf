@@ -199,11 +199,11 @@ resource "aws_db_parameter_group" "db" {
 resource "aws_rds_cluster_parameter_group" "db" {
   count = "${var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0}"
 
-  name = "${var.name}-db-parameters"
+  name = "${var.name}-cluster-db-parameters"
 
   description = "Database Parameters Group for RDS cluster: ${var.environment}.${var.name}"
-  family      = "${var.db_parameter_family}"
-  parameter   = "${var.db_parameters}"
+  family      = "${var.db_cluster_parameter_family}"
+  parameter   = "${var.db_cluster_parameters}"
 
   tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
 }
