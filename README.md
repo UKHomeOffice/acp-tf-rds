@@ -68,6 +68,8 @@ Module usage:
 | database_password | The default password for the specified user for RDS | - | yes |
 | database_port | The database port being used by the RDS instance, i.e. 3306, 5342 | - | yes |
 | database_user | The username for the RDS to be created | `root` | no |
+| db_cluster_parameter_family | Cluster parameter group, depends on DB engine used | - | yes |
+| db_cluster_parameters | A map of database parameters for the RDS Cluster instance | `<list>` | no |
 | db_parameter_family | Parameter group, depends on DB engine used | - | yes |
 | db_parameters | A map of database parameters for the RDS instance | `<list>` | no |
 | dns_name | The dns name added the dns zone, else defaults to var.name | `` | no |

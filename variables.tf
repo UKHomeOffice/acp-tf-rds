@@ -62,8 +62,19 @@ variable "db_parameter_family" {
   # default = "postgres9.5"
 }
 
+variable "db_cluster_parameter_family" {
+  description = "Cluster parameter group, depends on DB engine used"
+
+  # default = "aurora-postgresql9.6"
+}
+
 variable "db_parameters" {
   description = "A map of database parameters for the RDS instance"
+  default     = []
+}
+
+variable "db_cluster_parameters" {
+  description = "A map of database parameters for the RDS Cluster instance"
   default     = []
 }
 
