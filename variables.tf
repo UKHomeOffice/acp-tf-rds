@@ -64,7 +64,7 @@ variable "db_parameter_family" {
 
 variable "db_cluster_parameter_family" {
   description = "Cluster parameter group, depends on DB engine used"
-  default     = []
+  default     = ""
 
   # default = "aurora-postgresql9.6"
 }
