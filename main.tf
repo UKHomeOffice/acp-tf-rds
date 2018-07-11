@@ -40,7 +40,7 @@
  *         backup_window              = "22:00-23:59"
  *         cidr_blocks                = ["${values(var.compute_cidrs)}"]
  *         vpc_id                     = "${var.vpc_id}"
- *         subnet_ids                 = ["${data.aws_subnet_ids.private.ids}"]
+ *         subnet_group_name          = "${var.environment}-rds-subnet-group"
  *         database_password          = "password"
  *         database_port              = "3306"
  *         database_user              = "root"
@@ -53,6 +53,9 @@
  *         storage_encrypted          = "true"
  *     }
  */
+locals {
+  db_subnet_group_name = "${coalesce(var.subnet_group_name, element(concat(aws_db_subnet_group.db.*.id, list("")), 0))}"
+}
 
 # Get the hosting zone
 data "aws_route53_zone" "selected" {
@@ -99,7 +102,7 @@ resource "aws_db_instance" "db_including_name" {
   backup_retention_period     = "${var.backup_retention_period}"
   backup_window               = "${var.backup_window}"
   copy_tags_to_snapshot       = "${var.copy_tags_to_snapshot}"
-  db_subnet_group_name        = "${aws_db_subnet_group.db.name}"
+  db_subnet_group_name        = "${local.db_subnet_group_name}"
   engine                      = "${var.engine_type}"
   engine_version              = "${var.engine_version}"
   identifier                  = "${var.name}"
@@ -128,7 +131,7 @@ resource "aws_db_instance" "db_excluding_name" {
   backup_retention_period     = "${var.backup_retention_period}"
   backup_window               = "${var.backup_window}"
   copy_tags_to_snapshot       = "${var.copy_tags_to_snapshot}"
-  db_subnet_group_name        = "${aws_db_subnet_group.db.name}"
+  db_subnet_group_name        = "${local.db_subnet_group_name}"
   engine                      = "${var.engine_type}"
   engine_version              = "${var.engine_version}"
   identifier                  = "${var.name}"
@@ -156,7 +159,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   cluster_identifier              = "${var.name}"
   database_name                   = "${var.name}"
   db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.db.id}"
-  db_subnet_group_name            = "${aws_db_subnet_group.db.name}"
+  db_subnet_group_name            = "${local.db_subnet_group_name}"
   engine                          = "${var.engine_type}"
   engine_version                  = "${var.engine_version}"
   master_password                 = "${var.database_password}"
@@ -174,7 +177,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
   auto_minor_version_upgrade = "${var.auto_minor_version_upgrade}"
   cluster_identifier         = "${aws_rds_cluster.aurora_cluster.id}"
-  db_subnet_group_name       = "${aws_db_subnet_group.db.name}"
+  db_subnet_group_name       = "${local.db_subnet_group_name}"
   db_parameter_group_name    = "${aws_db_parameter_group.db.id}"
   engine                     = "${var.engine_type}"
   engine_version             = "${var.engine_version}"
@@ -210,6 +213,8 @@ resource "aws_rds_cluster_parameter_group" "db" {
 
 # Create RDS Subnets
 resource "aws_db_subnet_group" "db" {
+  count = "${var.subnet_group_name == "" && length(var.subnet_ids) != 0 ? 1 : 0}"
+
   name        = "${var.name}-rds"
   description = "RDS Subnet Group for service: ${var.name}, environment: ${var.environment}"
   subnet_ids  = ["${var.subnet_ids}"]
