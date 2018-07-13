@@ -68,7 +68,7 @@ resource "aws_security_group" "db" {
   description = "The security group used to manage access to rds: ${var.name}, environment: ${var.environment}"
   vpc_id      = "${var.vpc_id}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
 # Ingress Rule to permit inbound database port
@@ -118,7 +118,7 @@ resource "aws_db_instance" "db_including_name" {
   storage_type                = "${var.storage_type}"
   username                    = "${var.database_user}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
 # The database instance itself
@@ -147,7 +147,7 @@ resource "aws_db_instance" "db_excluding_name" {
   storage_type                = "${var.storage_type}"
   username                    = "${var.database_user}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
 # Cluster for Amazon Aurora
@@ -195,7 +195,7 @@ resource "aws_db_parameter_group" "db" {
   family      = "${var.db_parameter_family}"
   parameter   = "${var.db_parameters}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
 # Create the RDS cluster parameters
@@ -208,7 +208,7 @@ resource "aws_rds_cluster_parameter_group" "db" {
   family      = "${var.db_cluster_parameter_family}"
   parameter   = "${var.db_cluster_parameters}"
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
 # Create RDS Subnets
@@ -219,7 +219,7 @@ resource "aws_db_subnet_group" "db" {
   description = "RDS Subnet Group for service: ${var.name}, environment: ${var.environment}"
   subnet_ids  = ["${var.subnet_ids}"]
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment), map("KubernetesCluster", var.environment))}"
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
 # Create a DNS name for the resource
