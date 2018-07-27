@@ -108,7 +108,7 @@ resource "aws_db_instance" "db_including_name" {
   parameter_group_name        = "${aws_db_parameter_group.db.id}"
   password                    = "${var.database_password}"
   port                        = "${var.database_port}"
-  publicly_accessible         = false
+  publicly_accessible         = "${var.publicly_accessible}"
   vpc_security_group_ids      = ["${aws_security_group.db.id}"]
   skip_final_snapshot         = "${var.skip_final_snapshot}"
   storage_encrypted           = "${var.storage_encrypted}"
@@ -137,7 +137,7 @@ resource "aws_db_instance" "db_excluding_name" {
   parameter_group_name        = "${aws_db_parameter_group.db.id}"
   password                    = "${var.database_password}"
   port                        = "${var.database_port}"
-  publicly_accessible         = false
+  publicly_accessible         = "${var.publicly_accessible}"
   vpc_security_group_ids      = ["${aws_security_group.db.id}"]
   skip_final_snapshot         = "${var.skip_final_snapshot}"
   storage_encrypted           = "${var.storage_encrypted}"
@@ -180,7 +180,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   engine_version             = "${var.engine_version}"
   identifier                 = "${var.name}${var.number_of_aurora_instances != 1 ? "-${count.index}" : "" }"
   instance_class             = "${var.instance_class}"
-  publicly_accessible        = false
+  publicly_accessible        = "${var.publicly_accessible}"
   tags                       = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
