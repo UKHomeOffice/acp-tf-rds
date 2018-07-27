@@ -176,3 +176,8 @@ variable "number_of_aurora_instances" {
   description = "The number of Aurora instances to create"
   default     = 1
 }
+
+variable "publicly_accessible" {
+  description = "If true, the RDS will be publicly accessible"
+  default     = false
+}
