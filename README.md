@@ -39,7 +39,7 @@ Module usage:
         backup_window              = "22:00-23:59"
         cidr_blocks                = ["${values(var.compute_cidrs)}"]
         vpc_id                     = "${var.vpc_id}"
-        subnet_ids                 = ["${data.aws_subnet_ids.private.ids}"]
+        subnet_group_name          = "${var.environment}-rds-subnet-group"
         database_password          = "password"
         database_port              = "3306"
         database_user              = "root"
@@ -87,6 +87,7 @@ Module usage:
 | skip_final_snapshot | If true (default), no snapshot will be made before deleting DB | `true` | no |
 | storage_encrypted | Indicates you want the underlining storage to be encrypted | `true` | no |
 | storage_type | One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). | `gp2` | no |
+| subnet_group_name | The name/ID of the subnet group for the instance | `` | no |
 | subnet_ids | The list of subnet IDs associated to a vpc | `<list>` | no |
 | subnet_role | A role used to filter out which subnets the RDS should reside, defaults to Role=compute | `compute` | no |
 | tags | A map of tags to add to all resources | `<map>` | no |

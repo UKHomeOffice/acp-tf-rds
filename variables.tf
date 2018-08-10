@@ -181,3 +181,8 @@ variable "publicly_accessible" {
   description = "If true, the RDS will be publicly accessible"
   default     = false
 }
+
+variable "subnet_group_name" {
+  description = "The name/ID of the subnet group for the instance"
+  default     = ""
+}
