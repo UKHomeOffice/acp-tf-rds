@@ -59,7 +59,7 @@ Module usage:
 |------|-------------|:-----:|:-----:|
 | allocated_storage | The allocated storage in GBs for the RDS | - | yes |
 | allow_major_version_upgrade | Allow major version upgrade | `false` | no |
-| auto_minor_version_upgrade | Allow automated minor version upgrade | `true` | no |
+| auto_minor_version_upgrade | Allow automated minor version upgrade | `false` | no |
 | backup_retention_period | How long will we retain backups | `0` | no |
 | backup_window | When AWS can run snapshot, can't overlap with maintenance window | `22:00-03:00` | no |
 | cidr_blocks | A list of network cidr block which are permitted acccess | `<list>` | no |
