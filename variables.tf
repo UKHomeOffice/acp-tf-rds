@@ -128,7 +128,7 @@ variable "instance_class" {
 
 variable "auto_minor_version_upgrade" {
   description = "Allow automated minor version upgrade"
-  default     = true
+  default     = false
 }
 
 variable "allow_major_version_upgrade" {
