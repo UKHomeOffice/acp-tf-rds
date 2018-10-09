@@ -186,3 +186,8 @@ variable "subnet_group_name" {
   description = "The name/ID of the subnet group for the instance"
   default     = ""
 }
+
+variable "deletion_protection" {
+  description = "If true, enforces deletion protection - should set true on production"
+  default     = "false"
+}
