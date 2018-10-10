@@ -137,8 +137,8 @@ variable "allow_major_version_upgrade" {
 }
 
 variable "skip_final_snapshot" {
-  description = "If true (default), no snapshot will be made before deleting DB"
-  default     = true
+  description = "If true (false by default), no snapshot will be made before deleting DB"
+  default     = false
 }
 
 variable "copy_tags_to_snapshot" {
