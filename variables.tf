@@ -186,3 +186,8 @@ variable "subnet_group_name" {
   description = "The name/ID of the subnet group for the instance"
   default     = ""
 }
+
+variable "log_access_enabled" {
+  description = "Create a user with access to the instance's logs"
+  default     = false
+}

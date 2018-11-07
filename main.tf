@@ -55,6 +55,7 @@
  */
 locals {
   db_subnet_group_name = "${coalesce(var.subnet_group_name, element(concat(aws_db_subnet_group.db.*.id, list("")), 0))}"
+  rds_instance_arn     = "${coalesce(element(concat(aws_db_instance.db_including_name.*.arn, list("")), 0), element(concat(aws_db_instance.db_excluding_name.*.arn, list("")), 0), element(concat(aws_rds_cluster_instance.aurora_cluster_instance.*.arn, list("")), 0))}"
 }
 
 # Get the hosting zone
@@ -244,4 +245,42 @@ resource "aws_route53_record" "dns_excluding_dbname" {
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
   records = ["${aws_db_instance.db_excluding_name.address}"]
+}
+
+# User with access to RDS logs
+resource "aws_iam_user" "rds_logs_iam_user" {
+  count = "${var.log_access_enabled ? 1 : 0}"
+
+  name = "${var.name}-Logs"
+}
+
+resource "aws_iam_policy" "rds_log_policy" {
+  count = "${var.log_access_enabled ? 1 : 0}"
+
+  name        = "${var.name}-LogAccessPolicy"
+  description = "Allows access to logs for the RDS instance: ${var.name}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "AccessRDSLogs",
+      "Effect": "Allow",
+      "Action": [
+        "rds:DescribeDBLogFiles",
+        "rds:DownloadDBLogFilePortion"
+      ],
+      "Resource": "${local.rds_instance_arn}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_user_policy_attachment" "rds_log_policy_attachement" {
+  count = "${var.log_access_enabled ? 1 : 0}"
+
+  user       = "${aws_iam_user.rds_logs_iam_user.name}"
+  policy_arn = "${aws_iam_policy.rds_log_policy.arn}"
 }
