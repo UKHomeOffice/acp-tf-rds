@@ -81,6 +81,7 @@ Module usage:
 | environment | The environment the RDS is running in i.e. dev, prod etc | - | yes |
 | instance_class | Class of RDS instance | `db.t2.medium` | no |
 | is_multi_az | Set to true on production | `false` | no |
+| license_model | License model information required for some DBs like Oracle SE2 | `` | no |
 | log_access_enabled | Create a user with access to the instance's logs | `false` | no |
 | name | A descriptive name for the RDS instance (leave blank only when rds requires it to be blank) | - | yes |
 | number_of_aurora_instances | The number of Aurora instances to create | `1` | no |

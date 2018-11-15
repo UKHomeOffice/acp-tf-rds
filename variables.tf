@@ -84,6 +84,11 @@ variable "is_multi_az" {
   default     = false
 }
 
+variable "license_model" {
+  description = "License model information required for some DBs like Oracle SE2"
+  default     = ""
+}
+
 variable "storage_type" {
   description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)."
   default     = "gp2"
