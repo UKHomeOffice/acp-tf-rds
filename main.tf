@@ -162,7 +162,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
 
   backup_retention_period         = "${var.backup_retention_period}"
   cluster_identifier              = "${var.name}"
-  database_name                   = "${var.name}"
+  database_name                   = "${var.database_name}"
   db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.db.id}"
   db_subnet_group_name            = "${local.db_subnet_group_name}"
   engine                          = "${var.engine_type}"
