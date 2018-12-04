@@ -162,7 +162,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
 
   backup_retention_period         = "${var.backup_retention_period}"
   cluster_identifier              = "${var.name}"
-  database_name                   = "${var.name}"
+  database_name                   = "${var.database_name}"
   db_cluster_parameter_group_name = "${aws_rds_cluster_parameter_group.db.id}"
   db_subnet_group_name            = "${local.db_subnet_group_name}"
   engine                          = "${var.engine_type}"
@@ -186,7 +186,6 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   db_subnet_group_name       = "${local.db_subnet_group_name}"
   db_parameter_group_name    = "${aws_db_parameter_group.db.id}"
   engine                     = "${var.engine_type}"
-  engine_version             = "${var.engine_version}"
   identifier                 = "${var.name}${var.number_of_aurora_instances != 1 ? "-${count.index}" : "" }"
   instance_class             = "${var.instance_class}"
   publicly_accessible        = "${var.publicly_accessible}"
