@@ -55,7 +55,7 @@
  */
 locals {
   db_subnet_group_name = "${coalesce(var.subnet_group_name, element(concat(aws_db_subnet_group.db.*.id, list("")), 0))}"
-  rds_instance_arn     = "${coalesce(element(concat(aws_db_instance.db_including_name.*.arn, list("")), 0), element(concat(aws_db_instance.db_excluding_name.*.arn, list("")), 0), element(concat(aws_rds_cluster_instance.aurora_cluster_instance.*.arn, list("")), 0))}"
+  rds_instance_arn     = "${coalesce(element(concat(aws_db_instance.db_including_name.*.arn, list("")), 0),element(concat(aws_db_instance.db_including_name_with_read_replica.*.arn, list("")), 0),element(concat(aws_db_instance.db_excluding_name.*.arn, list("")), 0),element(concat(aws_db_instance.db_excluding_name_with_read_replica.*.arn, list("")), 0), element(concat(aws_rds_cluster_instance.aurora_cluster_instance.*.arn, list("")), 0))}"
 }
 
 # Get the hosting zone
@@ -120,8 +120,39 @@ resource "aws_db_instance" "db_including_name" {
   storage_encrypted           = "${var.storage_encrypted}"
   storage_type                = "${var.storage_type}"
   username                    = "${var.database_user}"
+  tags                        = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
+}
 
-  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
+# The database instance itself with read replica
+resource "aws_db_instance" "db_including_name_with_read_replica" {
+  count = "${var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && length(var.replicate_source_db) == 0 ? 1 : 0}"
+
+  name                        = "${var.database_name}"
+  allocated_storage           = "${var.allocated_storage}"
+  allow_major_version_upgrade = "${var.allow_major_version_upgrade}"
+  auto_minor_version_upgrade  = "${var.auto_minor_version_upgrade}"
+  backup_retention_period     = "${var.backup_retention_period}"
+  backup_window               = "${var.backup_window}"
+  copy_tags_to_snapshot       = "${var.copy_tags_to_snapshot}"
+  db_subnet_group_name        = "${local.db_subnet_group_name}"
+  engine                      = "${var.engine_type}"
+  engine_version              = "${var.engine_version}"
+  final_snapshot_identifier   = "${var.name}"
+  identifier                  = "${var.name}"
+  instance_class              = "${var.instance_class}"
+  license_model               = "${var.license_model}"
+  multi_az                    = "${var.is_multi_az}"
+  parameter_group_name        = "${aws_db_parameter_group.db.id}"
+  password                    = "${var.database_password}"
+  port                        = "${var.database_port}"
+  publicly_accessible         = "${var.publicly_accessible}"
+  vpc_security_group_ids      = ["${aws_security_group.db.id}"]
+  replicate_source_db         = "${var.replicate_source_db}"
+  skip_final_snapshot         = "${var.skip_final_snapshot}"
+  storage_encrypted           = "${var.storage_encrypted}"
+  storage_type                = "${var.storage_type}"
+  username                    = "${var.database_user}"
+  tags                        = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
 }
 
 # The database instance itself
@@ -147,6 +178,39 @@ resource "aws_db_instance" "db_excluding_name" {
   port                        = "${var.database_port}"
   publicly_accessible         = "${var.publicly_accessible}"
   vpc_security_group_ids      = ["${aws_security_group.db.id}"]
+  skip_final_snapshot         = "${var.skip_final_snapshot}"
+  storage_encrypted           = "${var.storage_encrypted}"
+  storage_type                = "${var.storage_type}"
+  username                    = "${var.database_user}"
+
+  tags = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
+}
+
+# The database instance itself with read replica
+
+resource "aws_db_instance" "db_excluding_name_with_read_replica" {
+  count = "${var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && length(var.replicate_source_db) == 0 ? 1 : 0}"
+
+  allocated_storage           = "${var.allocated_storage}"
+  allow_major_version_upgrade = "${var.allow_major_version_upgrade}"
+  auto_minor_version_upgrade  = "${var.auto_minor_version_upgrade}"
+  backup_retention_period     = "${var.backup_retention_period}"
+  backup_window               = "${var.backup_window}"
+  copy_tags_to_snapshot       = "${var.copy_tags_to_snapshot}"
+  db_subnet_group_name        = "${local.db_subnet_group_name}"
+  engine                      = "${var.engine_type}"
+  engine_version              = "${var.engine_version}"
+  final_snapshot_identifier   = "${var.name}"
+  identifier                  = "${var.name}"
+  instance_class              = "${var.instance_class}"
+  license_model               = "${var.license_model}"
+  multi_az                    = "${var.is_multi_az}"
+  parameter_group_name        = "${aws_db_parameter_group.db.id}"
+  password                    = "${var.database_password}"
+  port                        = "${var.database_port}"
+  publicly_accessible         = "${var.publicly_accessible}"
+  vpc_security_group_ids      = ["${aws_security_group.db.id}"]
+  replicate_source_db         = "${var.replicate_source_db}"
   skip_final_snapshot         = "${var.skip_final_snapshot}"
   storage_encrypted           = "${var.storage_encrypted}"
   storage_type                = "${var.storage_type}"
@@ -238,6 +302,17 @@ resource "aws_route53_record" "dns_including_dbname" {
   records = ["${aws_db_instance.db_including_name.address}"]
 }
 
+# Create a DNS name for the resource
+resource "aws_route53_record" "dns_including_dbname_with_read_replica" {
+  count = "${var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql"&& length(var.replicate_source_db) == 0  ? 1 : 0}"
+
+  zone_id = "${data.aws_route53_zone.selected.id}"
+  name    = "${var.dns_name == "" ? var.name : var.dns_name}"
+  type    = "${var.dns_type}"
+  ttl     = "${var.dns_ttl}"
+  records = ["${aws_db_instance.db_including_name_with_read_replica.address}"]
+}
+
 resource "aws_route53_record" "dns_excluding_dbname" {
   count = "${var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" ? 1 : 0}"
 
@@ -246,6 +321,16 @@ resource "aws_route53_record" "dns_excluding_dbname" {
   type    = "${var.dns_type}"
   ttl     = "${var.dns_ttl}"
   records = ["${aws_db_instance.db_excluding_name.address}"]
+}
+
+resource "aws_route53_record" "dns_excluding_dbname_with_read_replica" {
+  count = "${var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && length(var.replicate_source_db) == 0 ? 1 : 0}"
+
+  zone_id = "${data.aws_route53_zone.selected.id}"
+  name    = "${var.dns_name == "" ? var.name : var.dns_name}"
+  type    = "${var.dns_type}"
+  ttl     = "${var.dns_ttl}"
+  records = ["${aws_db_instance.db_excluding_name_with_read_replica.address}"]
 }
 
 # User with access to RDS logs
