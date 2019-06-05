@@ -196,3 +196,8 @@ variable "log_access_enabled" {
   description = "Create a user with access to the instance's logs"
   default     = false
 }
+
+variable "replicate_source_db" {
+  description = "Specifies that this resource is a Replicate database, and to use this value as the source database."
+  default     = ""
+}
