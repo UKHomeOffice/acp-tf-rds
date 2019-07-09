@@ -210,7 +210,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   db_subnet_group_name       = "${local.db_subnet_group_name}"
   db_parameter_group_name    = "${aws_db_parameter_group.db.id}"
   engine                     = "${var.engine_type}"
-  identifier                 = "${var.name}${var.number_of_aurora_instances != 1 ? "-${count.index}" : "" }"
+  identifier                 = "${var.name}${count.index > 0 ? "-${count.index}" : "" }"
   instance_class             = "${var.instance_class}"
   publicly_accessible        = "${var.publicly_accessible}"
   tags                       = "${merge(var.tags, map("Name", format("%s-%s", var.environment, var.name)), map("Env", var.environment))}"
