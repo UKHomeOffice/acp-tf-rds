@@ -197,6 +197,11 @@ variable "log_access_enabled" {
   default     = false
 }
 
+variable "management_access_enabled" {
+  description = "Create a user that can start/stop RDS and get logs with AWS CLI"
+  default     = false
+}
+
 variable "replicate_source_db" {
   description = "Specifies that this resource is a Replicate database, and to use this value as the source database."
   default     = ""

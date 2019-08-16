@@ -56,6 +56,8 @@
 locals {
   db_subnet_group_name = "${coalesce(var.subnet_group_name, element(concat(aws_db_subnet_group.db.*.id, list("")), 0))}"
   rds_instance_arn     = "${coalesce(element(concat(aws_db_instance.db_including_name.*.arn, list("")), 0),element(concat(aws_db_instance.db_read_replica.*.arn, list("")), 0),element(concat(aws_db_instance.db_excluding_name.*.arn, list("")), 0), element(concat(aws_rds_cluster_instance.aurora_cluster_instance.*.arn, list("")), 0))}"
+  rds_cluster_arn      = "${join("", aws_rds_cluster.aurora_cluster.*.arn)}"
+  target_arn           = "${coalesce(local.rds_cluster_arn, local.rds_instance_arn)}"
 }
 
 # Get the hosting zone
@@ -319,4 +321,55 @@ resource "aws_iam_user_policy_attachment" "rds_log_policy_attachement" {
 
   user       = "${aws_iam_user.rds_logs_iam_user.name}"
   policy_arn = "${aws_iam_policy.rds_log_policy.arn}"
+}
+
+# User with management access (logs and start/stop)
+resource "aws_iam_user" "rds_management_iam_user" {
+  count = "${var.management_access_enabled ? 1 : 0}"
+
+  name = "${var.name}-Management"
+}
+
+resource "aws_iam_policy" "rds_management_policy" {
+  count = "${var.management_access_enabled ? 1 : 0}"
+
+  name        = "${var.name}-ManagementPolicy"
+  description = "Allows starting/stopping RDS instance: ${var.name}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RDSmanagelogs",
+      "Effect": "Allow",
+      "Action": [
+        "rds:DescribeDBLogFiles",
+        "rds:DownloadDBLogFilePortion"
+      ],
+      "Resource": "${local.rds_instance_arn}"
+    },
+    {
+      "Sid": "RDSstartstop",
+      "Effect": "Allow",
+      "Action": [
+        "rds:DescribeDBClusters",
+        "rds:DescribeDBInstances",
+        "rds:StartDBCluster",      
+        "rds:StartDBInstance",      
+        "rds:StopDBCluster",
+        "rds:StopDBInstance"
+      ],
+      "Resource": "${local.target_arn}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_user_policy_attachment" "rds_management_policy_attachment" {
+  count = "${var.management_access_enabled ? 1 : 0}"
+
+  user       = "${aws_iam_user.rds_management_iam_user.name}"
+  policy_arn = "${aws_iam_policy.rds_management_policy.arn}"
 }
