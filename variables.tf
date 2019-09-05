@@ -57,7 +57,6 @@ variable "dns_ttl" {
 # We're "cloning" default ones, but we need to specify which should be copied
 variable "db_parameter_family" {
   description = "Parameter group, depends on DB engine used"
-
   # default = "mysql5.6"
   # default = "postgres9.5"
 }
@@ -65,7 +64,6 @@ variable "db_parameter_family" {
 variable "db_cluster_parameter_family" {
   description = "Cluster parameter group, depends on DB engine used"
   default     = ""
-
   # default = "aurora-postgresql9.6"
 }
 
@@ -105,7 +103,6 @@ variable "allocated_storage" {
 
 variable "engine_type" {
   description = "Database engine type"
-
   # Valid types are
   # - mysql
   # - postgres
@@ -117,7 +114,6 @@ variable "engine_type" {
 
 variable "engine_version" {
   description = "Database engine version, depends on engine type"
-
   # For valid engine versions, see:
   # See http://docs.aws.amazon.com/cli/latest/reference/rds/create-db-instance.html
   # --engine-version
@@ -158,7 +154,7 @@ variable "backup_window" {
 
 variable "backup_retention_period" {
   description = "How long will we retain backups"
-  type        = "string"
+  type        = string
   default     = 0
 }
 
@@ -206,3 +202,4 @@ variable "replicate_source_db" {
   description = "Specifies that this resource is a Replicate database, and to use this value as the source database."
   default     = ""
 }
+
