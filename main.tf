@@ -58,18 +58,15 @@ terraform {
 }
 
 locals {
-  db_subnet_group_name = coalesce(
-    var.subnet_group_name,
-    element(concat(aws_db_subnet_group.db.*.id, [""]), 0),
-  )
-  rds_instance_arn = coalesce(
-    element(concat(aws_db_instance.db_including_name.*.arn, [""]), 0),
-    element(concat(aws_db_instance.db_read_replica.*.arn, [""]), 0),
-    element(concat(aws_db_instance.db_excluding_name.*.arn, [""]), 0),
-    element(concat(aws_rds_cluster_instance.aurora_cluster_instance.*.arn, [""]), 0, ),
-  )
+  db_subnet_group_name = element(compact(concat([var.subnet_group_name], aws_db_subnet_group.db.*.id)), 0)
+  rds_instance_arn = element(concat(compact(concat(
+    aws_db_instance.db_including_name.*.arn,
+    aws_db_instance.db_read_replica.*.arn,
+    aws_db_instance.db_excluding_name.*.arn,
+    aws_rds_cluster_instance.aurora_cluster_instance.*.arn,
+  )), [""]), 0)
   rds_cluster_arn = join("", aws_rds_cluster.aurora_cluster.*.arn)
-  target_arn      = coalesce(local.rds_cluster_arn, local.rds_instance_arn)
+  target_arn      = element(concat(compact([local.rds_cluster_arn, local.rds_instance_arn]), [""]), 0)
 }
 
 # Get the hosting zone
