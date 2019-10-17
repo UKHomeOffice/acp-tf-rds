@@ -58,7 +58,7 @@ terraform {
 }
 
 locals {
-  db_subnet_group_name = element(compact(concat([var.subnet_group_name], aws_db_subnet_group.db.*.id)), 0)
+  db_subnet_group_name = var.subnet_group_name != "" || length(aws_db_subnet_group.db) != 0 ? element(compact(concat([var.subnet_group_name], aws_db_subnet_group.db.*.id)), 0) : ""
   rds_instance_arn = element(concat(compact(concat(
     aws_db_instance.db_including_name.*.arn,
     aws_db_instance.db_read_replica.*.arn,
