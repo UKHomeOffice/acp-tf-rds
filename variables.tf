@@ -158,6 +158,11 @@ variable "backup_retention_period" {
   default     = 0
 }
 
+variable "maintenance_window" {
+  description = "The window AWS will perform maintenance in"
+  default     = ""
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   default     = {}
@@ -202,4 +207,3 @@ variable "replicate_source_db" {
   description = "Specifies that this resource is a Replicate database, and to use this value as the source database."
   default     = ""
 }
-
