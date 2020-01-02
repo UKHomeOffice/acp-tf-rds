@@ -122,6 +122,7 @@ resource "aws_db_instance" "db_including_name" {
   backup_retention_period     = var.backup_retention_period
   backup_window               = var.backup_window
   copy_tags_to_snapshot       = var.copy_tags_to_snapshot
+  ca_cert_identifier          = var.ca_cert_identifier
   db_subnet_group_name        = local.db_subnet_group_name
   engine                      = var.engine_type
   engine_version              = var.engine_version
@@ -159,6 +160,7 @@ resource "aws_db_instance" "db_read_replica" {
   backup_retention_period     = var.backup_retention_period
   backup_window               = var.backup_window
   copy_tags_to_snapshot       = var.copy_tags_to_snapshot
+  ca_cert_identifier          = var.ca_cert_identifier
   final_snapshot_identifier   = var.name
   identifier                  = var.name
   instance_class              = var.instance_class
@@ -192,6 +194,7 @@ resource "aws_db_instance" "db_excluding_name" {
   auto_minor_version_upgrade  = var.auto_minor_version_upgrade
   backup_retention_period     = var.backup_retention_period
   backup_window               = var.backup_window
+  ca_cert_identifier          = var.ca_cert_identifier
   copy_tags_to_snapshot       = var.copy_tags_to_snapshot
   db_subnet_group_name        = local.db_subnet_group_name
   engine                      = var.engine_type

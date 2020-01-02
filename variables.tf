@@ -6,6 +6,10 @@ variable "environment" {
   description = "The environment the RDS is running in i.e. dev, prod etc"
 }
 
+variable "ca_cert_identifier" {
+  description = "The identifier of the CA certificate for the DB instance."
+}
+
 variable "dns_name" {
   description = "The dns name added the dns zone, else defaults to var.name"
   default     = ""
