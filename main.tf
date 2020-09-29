@@ -445,6 +445,7 @@ resource "aws_iam_policy" "rds_management_policy" {
       "Action": [
         "rds:DescribeDBClusters",
         "rds:DescribeDBInstances",
+        "rds:RebootDBInstance",
         "rds:StartDBCluster",
         "rds:StartDBInstance",
         "rds:StopDBCluster",
