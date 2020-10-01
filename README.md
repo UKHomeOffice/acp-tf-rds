@@ -83,6 +83,7 @@ Module usage:
 | license\_model | License model information required for some DBs like Oracle SE2 | string | `""` | no |
 | log\_access\_enabled | Create a user with access to the instance's logs | string | `"false"` | no |
 | management\_access\_enabled | Create a user that can start/stop RDS and get logs with AWS CLI | string | `"false"` | no |
+| max\_allocated\_storage | The maximum allocated storage that is allowed for an RDS instance | string | null | no |
 | name | A descriptive name for the RDS instance (leave blank only when rds requires it to be blank) | string | n/a | yes |
 | number\_of\_aurora\_instances | The number of Aurora instances to create | string | `"1"` | no |
 | publicly\_accessible | If true, the RDS will be publicly accessible | string | `"false"` | no |

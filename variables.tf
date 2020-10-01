@@ -203,3 +203,7 @@ variable "replicate_source_db" {
   default     = ""
 }
 
+variable "max_allocated_storage" {
+  description = "The maximum allocated storage that is allowed for an RDS instance."
+  default     = null
+}
