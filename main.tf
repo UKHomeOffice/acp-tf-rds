@@ -2,22 +2,24 @@
  * Module usage:
  *
  *      module "rds" {
- *         source              = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
+ *         source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
  *
- *         name                = "fake"
- *         allocated_storage   = "20"
- *         cidr_blocks         = ["${values(var.compute.cidrs)}"]
- *         database_name       = "keycloak"
- *         database_password   = "password"
- *         database_port       = "3306"
- *         database_user       = "root"
- *         db_parameter_family = "default.mysql5.6"
- *         dns_zone            = "${var.dns_zone}"
- *         engine_type         = "MariaDB"
- *         engine_version      = "10.1.19"
- *         environment         = "${var.environment}"
- *         instance_class      =  "db.t2.medium"
- *         db_parameters       = [
+ *         name                  = "fake"
+ *         allocated_storage     = "20"
+ *         cidr_blocks           = ["${values(var.compute.cidrs)}"]
+ *         database_name         = "keycloak"
+ *         database_password     = "password"
+ *         database_port         = "3306"
+ *         database_user         = "root"
+ *         db_parameter_family   = "default.mysql5.6"
+ *         dns_zone              = "${var.dns_zone}"
+ *         engine_type           = "MariaDB"
+ *         engine_version        = "10.1.19"
+ *         environment           = "${var.environment}"
+ *         instance_class        =  "db.t2.medium"
+  *        max_allocated_storage = 100
+
+ *         db_parameters         = [
  *           {
  *             name  = "character_set_server"
  *             value = "utf8"
@@ -36,6 +38,7 @@
  *         database_name              = "aurorafake"
  *         number_of_aurora_instances = "2"
  *         allocated_storage          = "20"
+ *         max_allocated_storage      = "100" 
  *         backup_retention_period    = "1"
  *         backup_window              = "22:00-23:59"
  *         cidr_blocks                = ["${values(var.compute_cidrs)}"]
@@ -129,6 +132,7 @@ resource "aws_db_instance" "db_including_name" {
   identifier                  = var.name
   instance_class              = var.instance_class
   license_model               = var.license_model
+  max_allocated_storage       = var.max_allocated_storage
   multi_az                    = var.is_multi_az
   parameter_group_name        = aws_db_parameter_group.db.id
   password                    = var.database_password
@@ -200,6 +204,7 @@ resource "aws_db_instance" "db_excluding_name" {
   identifier                  = var.name
   instance_class              = var.instance_class
   license_model               = var.license_model
+  max_allocated_storage       = var.max_allocated_storage
   multi_az                    = var.is_multi_az
   parameter_group_name        = aws_db_parameter_group.db.id
   password                    = var.database_password
