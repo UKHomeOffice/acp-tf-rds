@@ -84,6 +84,8 @@ Module usage:
 | log\_access\_enabled | Create a user with access to the instance's logs | string | `"false"` | no |
 | management\_access\_enabled | Create a user that can start/stop RDS and get logs with AWS CLI | string | `"false"` | no |
 | max\_allocated\_storage | The maximum allocated storage that is allowed for an RDS instance | string | null | no |
+| performance_insights_enabled | (Optional) Specifies whether Performance Insights are enabled. Defaults to false. | string | `"false"` | no |
+| performance_insights_retention_period | (Optional) The amount of time in days to retain Performance Insights data. Either 7 (7 days) or 731 (2 years). When specifying performance_insights_retention_period, performance_insights_enabled needs to be set to true. Defaults to '7'. | string | `""` | no |
 | name | A descriptive name for the RDS instance (leave blank only when rds requires it to be blank) | string | n/a | yes |
 | number\_of\_aurora\_instances | The number of Aurora instances to create | string | `"1"` | no |
 | publicly\_accessible | If true, the RDS will be publicly accessible | string | `"false"` | no |

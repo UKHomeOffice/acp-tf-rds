@@ -4,20 +4,21 @@
  *      module "rds" {
  *         source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
  *
- *         name                  = "fake"
- *         allocated_storage     = "20"
- *         cidr_blocks           = ["${values(var.compute.cidrs)}"]
- *         database_name         = "keycloak"
- *         database_password     = "password"
- *         database_port         = "3306"
- *         database_user         = "root"
- *         db_parameter_family   = "default.mysql5.6"
- *         dns_zone              = "${var.dns_zone}"
- *         engine_type           = "MariaDB"
- *         engine_version        = "10.1.19"
- *         environment           = "${var.environment}"
- *         instance_class        =  "db.t2.medium"
-  *        max_allocated_storage = 100
+ *         name                         = "fake"
+ *         allocated_storage            = "20"
+ *         cidr_blocks                  = ["${values(var.compute.cidrs)}"]
+ *         database_name                = "keycloak"
+ *         database_password            = "password"
+ *         database_port                = "3306"
+ *         database_user                = "root"
+ *         db_parameter_family          = "default.mysql5.6"
+ *         dns_zone                     = "${var.dns_zone}"
+ *         engine_type                  = "MariaDB"
+ *         engine_version               = "10.1.19"
+ *         environment                  = "${var.environment}"
+ *         instance_class               = "db.t2.medium"
+ *         max_allocated_storage        = 100
+ *         performance_insights_enabled = true
 
  *         db_parameters         = [
  *           {
@@ -70,6 +71,12 @@ locals {
   )), [""]), 0)
   rds_cluster_arn = join("", aws_rds_cluster.aurora_cluster.*.arn)
   target_arn      = element(concat(compact([local.rds_cluster_arn, local.rds_instance_arn]), [""]), 0)
+  rds_instance_resource_id = element(concat(compact(concat(
+    aws_db_instance.db_including_name.*.resource_id,
+    aws_db_instance.db_read_replica.*.resource_id,
+    aws_db_instance.db_excluding_name.*.resource_id,
+    aws_rds_cluster_instance.aurora_cluster_instance.*.resource_id,
+  )), [""]), 0)
 }
 
 # Get the hosting zone
@@ -118,31 +125,33 @@ resource "aws_security_group_rule" "out_all" {
 resource "aws_db_instance" "db_including_name" {
   count = var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
-  name                        = var.database_name
-  allocated_storage           = var.allocated_storage
-  allow_major_version_upgrade = var.allow_major_version_upgrade
-  auto_minor_version_upgrade  = var.auto_minor_version_upgrade
-  backup_retention_period     = var.backup_retention_period
-  backup_window               = var.backup_window
-  copy_tags_to_snapshot       = var.copy_tags_to_snapshot
-  db_subnet_group_name        = local.db_subnet_group_name
-  engine                      = var.engine_type
-  engine_version              = var.engine_version
-  final_snapshot_identifier   = var.name
-  identifier                  = var.name
-  instance_class              = var.instance_class
-  license_model               = var.license_model
-  max_allocated_storage       = var.max_allocated_storage
-  multi_az                    = var.is_multi_az
-  parameter_group_name        = aws_db_parameter_group.db.id
-  password                    = var.database_password
-  port                        = var.database_port
-  publicly_accessible         = var.publicly_accessible
-  vpc_security_group_ids      = [aws_security_group.db.id]
-  skip_final_snapshot         = var.skip_final_snapshot
-  storage_encrypted           = var.storage_encrypted
-  storage_type                = var.storage_type
-  username                    = var.database_user
+  name                                  = var.database_name
+  allocated_storage                     = var.allocated_storage
+  allow_major_version_upgrade           = var.allow_major_version_upgrade
+  auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  backup_retention_period               = var.backup_retention_period
+  backup_window                         = var.backup_window
+  copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
+  db_subnet_group_name                  = local.db_subnet_group_name
+  engine                                = var.engine_type
+  engine_version                        = var.engine_version
+  final_snapshot_identifier             = var.name
+  identifier                            = var.name
+  instance_class                        = var.instance_class
+  license_model                         = var.license_model
+  max_allocated_storage                 = var.max_allocated_storage
+  multi_az                              = var.is_multi_az
+  parameter_group_name                  = aws_db_parameter_group.db.id
+  password                              = var.database_password
+  port                                  = var.database_port
+  publicly_accessible                   = var.publicly_accessible
+  vpc_security_group_ids                = [aws_security_group.db.id]
+  skip_final_snapshot                   = var.skip_final_snapshot
+  storage_encrypted                     = var.storage_encrypted
+  storage_type                          = var.storage_type
+  username                              = var.database_user
+  performance_insights_enabled          = var.performance_insights_enabled
+  performance_insights_retention_period = var.performance_insights_retention_period
   tags = merge(
     var.tags,
     {
@@ -158,24 +167,26 @@ resource "aws_db_instance" "db_including_name" {
 resource "aws_db_instance" "db_read_replica" {
   count = var.replicate_source_db != "" ? 1 : 0
 
-  allow_major_version_upgrade = var.allow_major_version_upgrade
-  auto_minor_version_upgrade  = var.auto_minor_version_upgrade
-  backup_retention_period     = var.backup_retention_period
-  backup_window               = var.backup_window
-  copy_tags_to_snapshot       = var.copy_tags_to_snapshot
-  final_snapshot_identifier   = var.name
-  identifier                  = var.name
-  instance_class              = var.instance_class
-  license_model               = var.license_model
-  multi_az                    = var.is_multi_az
-  parameter_group_name        = aws_db_parameter_group.db.id
-  port                        = var.database_port
-  publicly_accessible         = var.publicly_accessible
-  vpc_security_group_ids      = [aws_security_group.db.id]
-  replicate_source_db         = var.replicate_source_db
-  skip_final_snapshot         = var.skip_final_snapshot
-  storage_encrypted           = var.storage_encrypted
-  storage_type                = var.storage_type
+  allow_major_version_upgrade           = var.allow_major_version_upgrade
+  auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  backup_retention_period               = var.backup_retention_period
+  backup_window                         = var.backup_window
+  copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
+  final_snapshot_identifier             = var.name
+  identifier                            = var.name
+  instance_class                        = var.instance_class
+  license_model                         = var.license_model
+  multi_az                              = var.is_multi_az
+  parameter_group_name                  = aws_db_parameter_group.db.id
+  port                                  = var.database_port
+  publicly_accessible                   = var.publicly_accessible
+  vpc_security_group_ids                = [aws_security_group.db.id]
+  replicate_source_db                   = var.replicate_source_db
+  skip_final_snapshot                   = var.skip_final_snapshot
+  storage_encrypted                     = var.storage_encrypted
+  storage_type                          = var.storage_type
+  performance_insights_enabled          = var.performance_insights_enabled
+  performance_insights_retention_period = var.performance_insights_retention_period
   tags = merge(
     var.tags,
     {
@@ -191,30 +202,32 @@ resource "aws_db_instance" "db_read_replica" {
 resource "aws_db_instance" "db_excluding_name" {
   count = var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
-  allocated_storage           = var.allocated_storage
-  allow_major_version_upgrade = var.allow_major_version_upgrade
-  auto_minor_version_upgrade  = var.auto_minor_version_upgrade
-  backup_retention_period     = var.backup_retention_period
-  backup_window               = var.backup_window
-  copy_tags_to_snapshot       = var.copy_tags_to_snapshot
-  db_subnet_group_name        = local.db_subnet_group_name
-  engine                      = var.engine_type
-  engine_version              = var.engine_version
-  final_snapshot_identifier   = var.name
-  identifier                  = var.name
-  instance_class              = var.instance_class
-  license_model               = var.license_model
-  max_allocated_storage       = var.max_allocated_storage
-  multi_az                    = var.is_multi_az
-  parameter_group_name        = aws_db_parameter_group.db.id
-  password                    = var.database_password
-  port                        = var.database_port
-  publicly_accessible         = var.publicly_accessible
-  vpc_security_group_ids      = [aws_security_group.db.id]
-  skip_final_snapshot         = var.skip_final_snapshot
-  storage_encrypted           = var.storage_encrypted
-  storage_type                = var.storage_type
-  username                    = var.database_user
+  allocated_storage                     = var.allocated_storage
+  allow_major_version_upgrade           = var.allow_major_version_upgrade
+  auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  backup_retention_period               = var.backup_retention_period
+  backup_window                         = var.backup_window
+  copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
+  db_subnet_group_name                  = local.db_subnet_group_name
+  engine                                = var.engine_type
+  engine_version                        = var.engine_version
+  final_snapshot_identifier             = var.name
+  identifier                            = var.name
+  instance_class                        = var.instance_class
+  license_model                         = var.license_model
+  max_allocated_storage                 = var.max_allocated_storage
+  multi_az                              = var.is_multi_az
+  parameter_group_name                  = aws_db_parameter_group.db.id
+  password                              = var.database_password
+  port                                  = var.database_port
+  publicly_accessible                   = var.publicly_accessible
+  vpc_security_group_ids                = [aws_security_group.db.id]
+  skip_final_snapshot                   = var.skip_final_snapshot
+  storage_encrypted                     = var.storage_encrypted
+  storage_type                          = var.storage_type
+  username                              = var.database_user
+  performance_insights_enabled          = var.performance_insights_enabled
+  performance_insights_retention_period = var.performance_insights_retention_period
 
   tags = merge(
     var.tags,
@@ -468,4 +481,42 @@ resource "aws_iam_user_policy_attachment" "rds_management_policy_attachment" {
 
   user       = aws_iam_user.rds_management_iam_user[0].name
   policy_arn = aws_iam_policy.rds_management_policy[0].arn
+}
+
+# User with performance insights access
+resource "aws_iam_user" "rds_performance_insights_iam_user" {
+  count = var.performance_insights_enabled ? 1 : 0
+
+  name = "${var.name}-PerformanceInsights"
+}
+
+resource "aws_iam_policy" "rds_performance_insights_policy" {
+  count = var.performance_insights_enabled ? 1 : 0
+
+  name        = "${var.name}-PerformanceInsightsPolicy"
+  description = "Read PI for RDS instance: ${var.name}"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "RDSreadpimetrics",
+      "Effect": "Allow",
+      "Action": [
+        "pi:GetResourceMetrics",
+        "pi:DescribeDimensionKeys"
+      ],
+      "Resource": "arn:aws:pi:*:*:metrics/rds/${local.rds_instance_resource_id}"
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_user_policy_attachment" "rds_performance_insights_policy_attachment" {
+  count = var.performance_insights_enabled ? 1 : 0
+
+  user       = aws_iam_user.rds_performance_insights_iam_user[0].name
+  policy_arn = aws_iam_policy.rds_performance_insights_policy[0].arn
 }

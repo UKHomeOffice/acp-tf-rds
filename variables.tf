@@ -207,3 +207,13 @@ variable "max_allocated_storage" {
   description = "The maximum allocated storage that is allowed for an RDS instance."
   default     = null
 }
+
+variable "performance_insights_enabled" {
+  description = "Create a user that can access PI with AWS CLI"
+  default     = false
+}
+
+variable "performance_insights_retention_period" {
+  description = "If Long Term Retention is turned off, performance data older than 7 days is deleted"
+  default     = null
+}
