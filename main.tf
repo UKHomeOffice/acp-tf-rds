@@ -75,7 +75,7 @@ locals {
     aws_db_instance.db_including_name.*.resource_id,
     aws_db_instance.db_read_replica.*.resource_id,
     aws_db_instance.db_excluding_name.*.resource_id,
-    aws_rds_cluster_instance.aurora_cluster_instance.*.resource_id,
+    aws_rds_cluster_instance.aurora_cluster_instance.*.dbi_resource_id,
   )), [""]), 0)
 }
 
