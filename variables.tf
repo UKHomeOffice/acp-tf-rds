@@ -152,6 +152,11 @@ variable "backup_window" {
   default     = "22:00-03:00"
 }
 
+variable "maintenance_window" {
+  description = "When AWS can run snapshot, can't overlap with maintenance window"
+  default     = "04:00-05:00"
+}
+
 variable "backup_retention_period" {
   description = "How long will we retain backups"
   type        = string

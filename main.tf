@@ -42,6 +42,7 @@
  *         max_allocated_storage      = "100" 
  *         backup_retention_period    = "1"
  *         backup_window              = "22:00-23:59"
+ *         maintenance_window         = "mon:00:00-mon:01:00"
  *         cidr_blocks                = ["${values(var.compute_cidrs)}"]
  *         vpc_id                     = "${var.vpc_id}"
  *         subnet_group_name          = "${var.environment}-rds-subnet-group"
@@ -131,6 +132,7 @@ resource "aws_db_instance" "db_including_name" {
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
+  maintenance_window                    = var.maintenance_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   db_subnet_group_name                  = local.db_subnet_group_name
   engine                                = var.engine_type
@@ -171,6 +173,7 @@ resource "aws_db_instance" "db_read_replica" {
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
+  maintenance_window                    = var.maintenance_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   final_snapshot_identifier             = var.name
   identifier                            = var.name
@@ -207,6 +210,7 @@ resource "aws_db_instance" "db_excluding_name" {
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
+  maintenance_window                    = var.maintenance_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   db_subnet_group_name                  = local.db_subnet_group_name
   engine                                = var.engine_type
@@ -257,6 +261,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   master_username                 = var.database_user
   port                            = var.database_port
   preferred_backup_window         = var.backup_window
+  preferred_maintenance_window    = var.maintenance_window
   skip_final_snapshot             = var.skip_final_snapshot
   storage_encrypted               = var.storage_encrypted
   vpc_security_group_ids          = [aws_security_group.db.id]
