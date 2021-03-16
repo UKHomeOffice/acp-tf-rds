@@ -121,7 +121,7 @@ resource "aws_security_group_rule" "out_all" {
   security_group_id = aws_security_group.db.id
 }
 
-# The database instance itself
+# The database instance with created database
 resource "aws_db_instance" "db_including_name" {
   count = var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
@@ -142,6 +142,7 @@ resource "aws_db_instance" "db_including_name" {
   max_allocated_storage                 = var.max_allocated_storage
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
+  option_group_name                     = var.custom_option_group_name != "" ? var.custom_option_group_name : null
   password                              = var.database_password
   port                                  = var.database_port
   publicly_accessible                   = var.publicly_accessible
@@ -178,6 +179,7 @@ resource "aws_db_instance" "db_read_replica" {
   license_model                         = var.license_model
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
+  option_group_name                     = var.custom_option_group_name != "" ? var.custom_option_group_name : null
   port                                  = var.database_port
   publicly_accessible                   = var.publicly_accessible
   vpc_security_group_ids                = [aws_security_group.db.id]
@@ -198,7 +200,7 @@ resource "aws_db_instance" "db_read_replica" {
   )
 }
 
-# The database instance itself
+# The database instance without created database 
 resource "aws_db_instance" "db_excluding_name" {
   count = var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
@@ -218,6 +220,7 @@ resource "aws_db_instance" "db_excluding_name" {
   max_allocated_storage                 = var.max_allocated_storage
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
+  option_group_name                     = var.custom_option_group_name != "" ? var.custom_option_group_name : null
   password                              = var.database_password
   port                                  = var.database_port
   publicly_accessible                   = var.publicly_accessible
