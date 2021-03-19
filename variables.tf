@@ -217,3 +217,8 @@ variable "performance_insights_retention_period" {
   description = "If Long Term Retention is turned off, performance data older than 7 days is deleted"
   default     = null
 }
+
+variable "custom_option_group_name" {
+  description = "Name of custom option group for RDS instance"
+  default     = ""
+}

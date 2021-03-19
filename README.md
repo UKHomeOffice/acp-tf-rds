@@ -71,6 +71,7 @@ Module usage:
 | db\_cluster\_parameters | A map of database parameters for the RDS Cluster instance | list | `<list>` | no |
 | db\_parameter\_family | Parameter group, depends on DB engine used | string | n/a | yes |
 | db\_parameters | A map of database parameters for the RDS instance | list | `<list>` | no |
+| custom_option_group_name | Name of custom option group for RDS instance. Required if custom_option_group is true | string | `""` | no |
 | dns\_name | The dns name added the dns zone, else defaults to var.name | string | `""` | no |
 | dns\_ttl | The dns record type for the RDS instance, defaults to CNAME | string | `"300"` | no |
 | dns\_type | The dns record type for the RDS instance, defaults to CNAME | string | `"CNAME"` | no |
@@ -105,4 +106,3 @@ Module usage:
 |------|-------------|
 | db\_excluding\_name\_instance\_id | ID of the instance |
 | db\_including\_name\_instance\_id | ID of the instance |
-
