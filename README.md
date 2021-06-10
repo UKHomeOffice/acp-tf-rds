@@ -83,6 +83,7 @@ Module usage:
 | is\_multi\_az | Set to true on production | string | `"false"` | no |
 | license\_model | License model information required for some DBs like Oracle SE2 | string | `""` | no |
 | log\_access\_enabled | Create a user with access to the instance's logs | string | `"false"` | no |
+| maintenance\_window | When AWS performs maintenance, can't overlap with backup window | string | `"null"` | no |
 | management\_access\_enabled | Create a user that can start/stop RDS and get logs with AWS CLI | string | `"false"` | no |
 | max\_allocated\_storage | The maximum allocated storage that is allowed for an RDS instance | string | null | no |
 | performance_insights_enabled | (Optional) Specifies whether Performance Insights are enabled. Defaults to false. | string | `"false"` | no |

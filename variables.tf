@@ -158,6 +158,11 @@ variable "backup_retention_period" {
   default     = 0
 }
 
+variable "maintenance_window" {
+  description = "The window to perform maintenance in, can't overlap with backup window"
+  default     = null
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   default     = {}

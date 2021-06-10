@@ -139,6 +139,7 @@ resource "aws_db_instance" "db_including_name" {
   identifier                            = var.name
   instance_class                        = var.instance_class
   license_model                         = var.license_model
+  maintenance_window                    = var.maintenance_window
   max_allocated_storage                 = var.max_allocated_storage
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
@@ -177,6 +178,7 @@ resource "aws_db_instance" "db_read_replica" {
   identifier                            = var.name
   instance_class                        = var.instance_class
   license_model                         = var.license_model
+  maintenance_window                    = var.maintenance_window
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
   option_group_name                     = var.custom_option_group_name != "" ? var.custom_option_group_name : null
@@ -217,6 +219,7 @@ resource "aws_db_instance" "db_excluding_name" {
   identifier                            = var.name
   instance_class                        = var.instance_class
   license_model                         = var.license_model
+  maintenance_window                    = var.maintenance_window
   max_allocated_storage                 = var.max_allocated_storage
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
@@ -260,6 +263,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   master_username                 = var.database_user
   port                            = var.database_port
   preferred_backup_window         = var.backup_window
+  preferred_maintenance_window    = var.maintenance_window
   skip_final_snapshot             = var.skip_final_snapshot
   storage_encrypted               = var.storage_encrypted
   vpc_security_group_ids          = [aws_security_group.db.id]
@@ -269,14 +273,15 @@ resource "aws_rds_cluster" "aurora_cluster" {
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? var.number_of_aurora_instances : 0
 
-  auto_minor_version_upgrade = var.auto_minor_version_upgrade
-  cluster_identifier         = aws_rds_cluster.aurora_cluster[0].id
-  db_subnet_group_name       = local.db_subnet_group_name
-  db_parameter_group_name    = aws_db_parameter_group.db.id
-  engine                     = var.engine_type
-  identifier                 = "${var.name}${count.index > 0 ? "-${count.index}" : ""}"
-  instance_class             = var.instance_class
-  publicly_accessible        = var.publicly_accessible
+  auto_minor_version_upgrade   = var.auto_minor_version_upgrade
+  cluster_identifier           = aws_rds_cluster.aurora_cluster[0].id
+  db_subnet_group_name         = local.db_subnet_group_name
+  db_parameter_group_name      = aws_db_parameter_group.db.id
+  engine                       = var.engine_type
+  identifier                   = "${var.name}${count.index > 0 ? "-${count.index}" : ""}"
+  instance_class               = var.instance_class
+  publicly_accessible          = var.publicly_accessible
+  preferred_maintenance_window = var.maintenance_window
   tags = merge(
     var.tags,
     {
