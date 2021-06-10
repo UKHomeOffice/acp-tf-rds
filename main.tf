@@ -1,62 +1,26 @@
-/**
- * Module usage:
- *
- *      module "rds" {
- *         source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
- *
- *         name                         = "fake"
- *         allocated_storage            = "20"
- *         cidr_blocks                  = ["${values(var.compute.cidrs)}"]
- *         database_name                = "keycloak"
- *         database_password            = "password"
- *         database_port                = "3306"
- *         database_user                = "root"
- *         db_parameter_family          = "default.mysql5.6"
- *         dns_zone                     = "${var.dns_zone}"
- *         engine_type                  = "MariaDB"
- *         engine_version               = "10.1.19"
- *         environment                  = "${var.environment}"
- *         instance_class               = "db.t2.medium"
- *         max_allocated_storage        = 100
- *         performance_insights_enabled = true
+/*
+Module usage:
 
- *         db_parameters         = [
- *           {
- *             name  = "character_set_server"
- *             value = "utf8"
- *           },
- *           {
- *             name  = "character_set_client"
- *             value = "utf8"
- *           }
- *         ]
- *       }
- *
- *     module "aurora-rds" {
- *         source                     = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
- *
- *         name                       = "aurorafake"
- *         database_name              = "aurorafake"
- *         number_of_aurora_instances = "2"
- *         allocated_storage          = "20"
- *         max_allocated_storage      = "100" 
- *         backup_retention_period    = "1"
- *         backup_window              = "22:00-23:59"
- *         cidr_blocks                = ["${values(var.compute_cidrs)}"]
- *         vpc_id                     = "${var.vpc_id}"
- *         subnet_group_name          = "${var.environment}-rds-subnet-group"
- *         database_password          = "password"
- *         database_port              = "3306"
- *         database_user              = "root"
- *         db_parameter_family        = "aurora-mysql5.7"
- *         dns_zone                   = "${var.dns_zone}"
- *         engine_type                = "aurora-mysql"
- *         engine_version             = "5.7"
- *         environment                = "${var.environment}"
- *         instance_class             = "db.t2.small"
- *         storage_encrypted          = "true"
- *     }
+     module "rds" {
+        source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
+
+        name                         = "fake"
+        allocated_storage            = "20"
+        cidr_blocks                  = ["${values(var.compute.cidrs)}"]
+        database_name                = "keycloak"
+        database_password            = "password"
+        database_port                = "3306"
+        database_user                = "root"
+        db_parameter_family          = "default.mysql5.6"
+        dns_zone                     = "${var.dns\_zone}"
+        engine_type                  = "MariaDB"
+        engine_version               = "10.1.19"
+        environment                  = "${var.environment}"
+        instance_class               = "db.t2.medium"
+        max_allocated_storage        = 100
+        performance_insights_enabled = true
  */
+
 terraform {
   required_version = ">= 0.12"
 }
@@ -77,6 +41,7 @@ locals {
     aws_db_instance.db_excluding_name.*.resource_id,
     aws_rds_cluster_instance.aurora_cluster_instance.*.dbi_resource_id,
   )), [""]), 0)
+  email_tags = { for i, email in var.email_addresses : "email${i}" => email }
 }
 
 # Get the hosting zone
@@ -405,6 +370,15 @@ resource "aws_iam_user" "rds_logs_iam_user" {
   count = var.log_access_enabled ? 1 : 0
 
   name = "${var.name}-Logs"
+
+  tags = merge(
+    var.tags,
+    local.email_tags,
+    {
+      "key_rotation" = var.key_rotation
+    },
+  )
+
 }
 
 resource "aws_iam_policy" "rds_log_policy" {
@@ -444,6 +418,15 @@ resource "aws_iam_user" "rds_management_iam_user" {
   count = var.management_access_enabled ? 1 : 0
 
   name = "${var.name}-Management"
+
+  tags = merge(
+    var.tags,
+    local.email_tags,
+    {
+      "key_rotation" = var.key_rotation
+    },
+  )
+
 }
 
 resource "aws_iam_policy" "rds_management_policy" {
@@ -496,6 +479,14 @@ resource "aws_iam_user" "rds_performance_insights_iam_user" {
   count = var.performance_insights_enabled ? 1 : 0
 
   name = "${var.name}-PerformanceInsights"
+
+  tags = merge(
+    var.tags,
+    local.email_tags,
+    {
+      "key_rotation" = var.key_rotation
+    },
+  )
 }
 
 resource "aws_iam_policy" "rds_performance_insights_policy" {
