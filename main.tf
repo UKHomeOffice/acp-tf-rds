@@ -519,3 +519,9 @@ resource "aws_iam_user_policy_attachment" "rds_performance_insights_policy_attac
   user       = aws_iam_user.rds_performance_insights_iam_user[0].name
   policy_arn = aws_iam_policy.rds_performance_insights_policy[0].arn
 }
+
+module "self_serve_access_keys" {
+  source = "git::https://github.com/UKHomeOffice/acp-tf-self-serve-access-keys?ref=v0.1.0"
+
+  user_names = concat(aws_iam_user.rds_logs_iam_user.*.name, aws_iam_user.rds_management_iam_user.*.name)
+}
