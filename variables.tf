@@ -227,3 +227,13 @@ variable "custom_option_group_name" {
   description = "Name of custom option group for RDS instance"
   default     = ""
 }
+
+variable "email_addresses" {
+  description = "A list of email addresses for key rotation notifications."
+  default     = []
+}
+
+variable "key_rotation" {
+  description = "Enable email notifications for old IAM keys."
+  default     = "true"
+}
