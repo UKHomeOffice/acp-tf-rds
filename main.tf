@@ -18,6 +18,7 @@ Module usage:
         environment                  = "${var.environment}"
         instance_class               = "db.t2.medium"
         max_allocated_storage        = 100
+        snapshot_identifier          = "rds:production-2015-06-26-06-05"
         performance_insights_enabled = true
  */
 
@@ -114,6 +115,7 @@ resource "aws_db_instance" "db_including_name" {
   publicly_accessible                   = var.publicly_accessible
   vpc_security_group_ids                = [aws_security_group.db.id]
   skip_final_snapshot                   = var.skip_final_snapshot
+  snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = var.storage_encrypted
   storage_type                          = var.storage_type
   username                              = var.database_user
@@ -152,6 +154,7 @@ resource "aws_db_instance" "db_read_replica" {
   vpc_security_group_ids                = [aws_security_group.db.id]
   replicate_source_db                   = var.replicate_source_db
   skip_final_snapshot                   = var.skip_final_snapshot
+  snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = var.storage_encrypted
   storage_type                          = var.storage_type
   performance_insights_enabled          = var.performance_insights_enabled
@@ -167,7 +170,7 @@ resource "aws_db_instance" "db_read_replica" {
   )
 }
 
-# The database instance without created database 
+# The database instance without created database
 resource "aws_db_instance" "db_excluding_name" {
   count = var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
@@ -194,6 +197,7 @@ resource "aws_db_instance" "db_excluding_name" {
   publicly_accessible                   = var.publicly_accessible
   vpc_security_group_ids                = [aws_security_group.db.id]
   skip_final_snapshot                   = var.skip_final_snapshot
+  snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = var.storage_encrypted
   storage_type                          = var.storage_type
   username                              = var.database_user
@@ -230,6 +234,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   preferred_backup_window         = var.backup_window
   preferred_maintenance_window    = var.maintenance_window
   skip_final_snapshot             = var.skip_final_snapshot
+  snapshot_identifier             = var.snapshot_identifier
   storage_encrypted               = var.storage_encrypted
   vpc_security_group_ids          = [aws_security_group.db.id]
 }
