@@ -237,3 +237,8 @@ variable "key_rotation" {
   description = "Enable email notifications for old IAM keys."
   default     = "true"
 }
+
+variable "snapshot_identifier" {
+  description = "Specifies whether or not to create this database from a snapshot."
+  default     = ""
+}

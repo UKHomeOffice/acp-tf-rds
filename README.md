@@ -17,6 +17,7 @@ Module usage:
         environment                  = "${var.environment}"
         instance_class               = "db.t2.medium"
         max_allocated_storage        = 100
+        snapshot_identifier          = "rds:production-2015-06-26-06-05"
         performance_insights_enabled = true
 
 ## Requirements
@@ -106,6 +107,7 @@ No modules.
 | <a name="input_publicly_accessible"></a> [publicly\_accessible](#input\_publicly\_accessible) | If true, the RDS will be publicly accessible | `bool` | `false` | no |
 | <a name="input_replicate_source_db"></a> [replicate\_source\_db](#input\_replicate\_source\_db) | Specifies that this resource is a Replicate database, and to use this value as the source database. | `string` | `""` | no |
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | If true (false by default), no snapshot will be made before deleting DB | `bool` | `false` | no |
+| <a name="snapshot_identifier"></a> [snapshot\_identifier](#snapshot/_identifier) | Specifies whether or not to create this database from a snapshot. | `string` | `"rds:production-2015-06-26-06-05"` | no |
 | <a name="input_storage_encrypted"></a> [storage\_encrypted](#input\_storage\_encrypted) | Indicates you want the underlining storage to be encrypted | `bool` | `true` | no |
 | <a name="input_storage_type"></a> [storage\_type](#input\_storage\_type) | One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD). | `string` | `"gp2"` | no |
 | <a name="input_subnet_group_name"></a> [subnet\_group\_name](#input\_subnet\_group\_name) | The name/ID of the subnet group for the instance | `string` | `""` | no |
