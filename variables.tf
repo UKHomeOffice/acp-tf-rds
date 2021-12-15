@@ -163,6 +163,12 @@ variable "maintenance_window" {
   default     = null
 }
 
+
+variable "apply_immediately" {
+  description = "Specifies whether any database modifications are applied immediately"
+  default     = false
+}
+
 variable "tags" {
   description = "A map of tags to add to all resources"
   default     = {}

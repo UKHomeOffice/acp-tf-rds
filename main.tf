@@ -6,6 +6,7 @@ Module usage:
 
         name                         = "fake"
         allocated_storage            = "20"
+        apply_immediately            = false
         cidr_blocks                  = ["${values(var.compute.cidrs)}"]
         database_name                = "keycloak"
         database_password            = "password"
@@ -95,6 +96,7 @@ resource "aws_db_instance" "db_including_name" {
   allocated_storage                     = var.allocated_storage
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  apply_immediately                     = var.apply_immediately
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
@@ -138,6 +140,7 @@ resource "aws_db_instance" "db_read_replica" {
 
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  apply_immediately                     = var.apply_immediately
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
@@ -177,6 +180,7 @@ resource "aws_db_instance" "db_excluding_name" {
   allocated_storage                     = var.allocated_storage
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  apply_immediately                     = var.apply_immediately
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
@@ -220,6 +224,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   # aurora = MySQL 5.6-compatible, aurora-mysql = MySQL 5.7-compatible
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0
 
+  apply_immediately               = var.apply_immediately
   backup_retention_period         = var.backup_retention_period
   cluster_identifier              = var.name
   database_name                   = var.database_name
@@ -244,6 +249,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? var.number_of_aurora_instances : 0
 
   auto_minor_version_upgrade   = var.auto_minor_version_upgrade
+  apply_immediately            = var.apply_immediately
   cluster_identifier           = aws_rds_cluster.aurora_cluster[0].id
   db_subnet_group_name         = local.db_subnet_group_name
   db_parameter_group_name      = aws_db_parameter_group.db.id

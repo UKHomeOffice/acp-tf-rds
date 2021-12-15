@@ -18,6 +18,7 @@ Module usage:
         instance_class               = "db.t2.medium"
         max_allocated_storage        = 100
         snapshot_identifier          = "rds:production-2015-06-26-06-05"
+        apply_immediately            = false
         performance_insights_enabled = true
 
 ## Requirements
@@ -71,6 +72,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_allocated_storage"></a> [allocated\_storage](#input\_allocated\_storage) | The allocated storage in GBs for the RDS | `any` | n/a | yes |
 | <a name="input_allow_major_version_upgrade"></a> [allow\_major\_version\_upgrade](#input\_allow\_major\_version\_upgrade) | Allow major version upgrade | `bool` | `false` | no |
+| <a name="apply_immediately"></a> [apply\_immediately](#apply\_immediately) | Database modifications are applied immediately | `bool` | `false` | no |
 | <a name="input_auto_minor_version_upgrade"></a> [auto\_minor\_version\_upgrade](#input\_auto\_minor\_version\_upgrade) | Allow automated minor version upgrade | `bool` | `false` | no |
 | <a name="input_backup_retention_period"></a> [backup\_retention\_period](#input\_backup\_retention\_period) | How long will we retain backups | `string` | `0` | no |
 | <a name="input_backup_window"></a> [backup\_window](#input\_backup\_window) | When AWS can run snapshot, can't overlap with maintenance window | `string` | `"22:00-03:00"` | no |
