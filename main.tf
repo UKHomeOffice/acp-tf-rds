@@ -471,7 +471,10 @@ resource "aws_iam_policy" "rds_management_policy" {
         "rds:StopDBCluster",
         "rds:StopDBInstance"
       ],
-      "Resource": "${local.target_arn}"
+      "Resource": [
+        "${local.target_arn}",
+        "${local.rds_instance_arn}"
+      ]
     }
   ]
 }
