@@ -35,6 +35,7 @@ variable "database_port" {
 
 variable "cidr_blocks" {
   description = "A list of network cidr block which are permitted acccess"
+  type        = list(string)
   default     = ["0.0.0.0/0"]
 }
 
@@ -69,16 +70,19 @@ variable "db_cluster_parameter_family" {
 
 variable "db_parameters" {
   description = "A map of database parameters for the RDS instance"
+  type        = list(map(string))
   default     = []
 }
 
 variable "db_cluster_parameters" {
   description = "A map of database parameters for the RDS Cluster instance"
+  type        = list(map(string))
   default     = []
 }
 
 variable "is_multi_az" {
   description = "Set to true on production"
+  type        = bool
   default     = false
 }
 
@@ -94,6 +98,7 @@ variable "storage_type" {
 
 variable "storage_encrypted" {
   description = "Indicates you want the underlining storage to be encrypted"
+  type        = bool
   default     = true
 }
 
@@ -139,11 +144,13 @@ variable "allow_major_version_upgrade" {
 
 variable "skip_final_snapshot" {
   description = "If true (false by default), no snapshot will be made before deleting DB"
+  type        = bool
   default     = false
 }
 
 variable "copy_tags_to_snapshot" {
   description = "Copy tags from DB to a snapshot"
+  type        = bool
   default     = true
 }
 
@@ -171,6 +178,7 @@ variable "apply_immediately" {
 
 variable "tags" {
   description = "A map of tags to add to all resources"
+  type        = map(string)
   default     = {}
 }
 
@@ -180,6 +188,7 @@ variable "vpc_id" {
 
 variable "subnet_ids" {
   description = "The list of subnet IDs associated to a vpc"
+  type        = list(string)
   default     = []
 }
 
@@ -191,6 +200,7 @@ variable "number_of_aurora_instances" {
 
 variable "publicly_accessible" {
   description = "If true, the RDS will be publicly accessible"
+  type        = bool
   default     = false
 }
 
@@ -201,11 +211,13 @@ variable "subnet_group_name" {
 
 variable "log_access_enabled" {
   description = "Create a user with access to the instance's logs"
+  type        = bool
   default     = false
 }
 
 variable "management_access_enabled" {
   description = "Create a user that can start/stop RDS and get logs with AWS CLI"
+  type        = bool
   default     = false
 }
 
@@ -221,6 +233,7 @@ variable "max_allocated_storage" {
 
 variable "performance_insights_enabled" {
   description = "Create a user that can access PI with AWS CLI"
+  type        = bool
   default     = false
 }
 
@@ -236,6 +249,7 @@ variable "custom_option_group_name" {
 
 variable "email_addresses" {
   description = "A list of email addresses for key rotation notifications."
+  type        = list(string)
   default     = []
 }
 
