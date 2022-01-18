@@ -1,31 +1,27 @@
-/*
-Module usage:
-
-     module "rds" {
-        source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
-
-        name                         = "fake"
-        allocated_storage            = "20"
-        apply_immediately            = false
-        cidr_blocks                  = ["${values(var.compute.cidrs)}"]
-        database_name                = "keycloak"
-        database_password            = "password"
-        database_port                = "3306"
-        database_user                = "root"
-        db_parameter_family          = "default.mysql5.6"
-        dns_zone                     = "${var.dns\_zone}"
-        engine_type                  = "MariaDB"
-        engine_version               = "10.1.19"
-        environment                  = "${var.environment}"
-        instance_class               = "db.t2.medium"
-        max_allocated_storage        = 100
-        snapshot_identifier          = "rds:production-2015-06-26-06-05"
-        performance_insights_enabled = true
+/**
+ * Module usage:
+ * 
+ *     module "rds" {
+ *        source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
+ *
+ *         name                         = "fake"
+ *        allocated_storage            = "20"
+ *        apply_immediately            = false
+ *        cidr_blocks                  = ["${values(var.compute.cidrs)}"]
+ *        database_name                = "keycloak"
+ *        database_password            = "password"
+ *        database_port                = "3306"
+ *        database_user                = "root"
+ *        db_parameter_family          = "default.mysql5.6"
+ *        dns_zone                     = "${var.dns\_zone}"
+ *        engine_type                  = "MariaDB"
+ *        engine_version               = "10.1.19"
+ *        environment                  = "${var.environment}"
+ *        instance_class               = "db.t2.medium"
+ *        max_allocated_storage        = 100
+ *        snapshot_identifier          = "rds:production-2015-06-26-06-05"
+ *        performance_insights_enabled = true
  */
-
-terraform {
-  required_version = ">= 0.12"
-}
 
 locals {
   db_subnet_group_name = var.subnet_group_name != "" || length(aws_db_subnet_group.db) != 0 ? element(compact(concat([var.subnet_group_name], aws_db_subnet_group.db.*.id)), 0) : ""
