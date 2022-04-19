@@ -6,6 +6,7 @@ Module usage:
 
         name                         = "fake"
         allocated_storage            = "20"
+        apply_immediately            = false
         cidr_blocks                  = ["${values(var.compute.cidrs)}"]
         database_name                = "keycloak"
         database_password            = "password"
@@ -94,6 +95,7 @@ resource "aws_db_instance" "db_including_name" {
   allocated_storage                     = var.allocated_storage
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  apply_immediately                     = var.apply_immediately
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
@@ -136,6 +138,7 @@ resource "aws_db_instance" "db_read_replica" {
 
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  apply_immediately                     = var.apply_immediately
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
@@ -174,6 +177,7 @@ resource "aws_db_instance" "db_excluding_name" {
   allocated_storage                     = var.allocated_storage
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
+  apply_immediately                     = var.apply_immediately
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot

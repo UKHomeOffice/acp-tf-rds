@@ -137,6 +137,11 @@ variable "allow_major_version_upgrade" {
   default     = false
 }
 
+variable "apply_immediately" {
+  description = "Specifies whether any database modifications are applied immediately"
+  default     = false
+}
+
 variable "skip_final_snapshot" {
   description = "If true (false by default), no snapshot will be made before deleting DB"
   default     = false
