@@ -341,7 +341,7 @@ resource "aws_route53_record" "dns_including_dbname" {
   name    = var.dns_name == "" ? var.name : var.dns_name
   type    = var.dns_type
   ttl     = var.dns_ttl
-  records = [aws_db_instance.db_including_name[0].address]
+  records = [var.breakfix_dns_override_record]
 }
 
 # Create a DNS name for the resource

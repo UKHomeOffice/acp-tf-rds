@@ -11,6 +11,10 @@ variable "dns_name" {
   default     = ""
 }
 
+variable "breakfix_dns_override_record" {
+  description = "Breakfix override to the DNS record value"
+}
+
 variable "dns_zone" {
   description = "The required route53 domain name we are added the dns entry to i.e. example.com"
 }
