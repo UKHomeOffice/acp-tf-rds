@@ -405,7 +405,10 @@ resource "aws_iam_policy" "rds_log_policy" {
         "rds:DescribeDBLogFiles",
         "rds:DownloadDBLogFilePortion"
       ],
-      "Resource": "${local.rds_instance_arn}"
+      "Resource": [
+        "${local.rds_instance_arn}",
+        "${local.rds_instance_arn}-*"
+      ]
     }
   ]
 }
