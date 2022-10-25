@@ -405,7 +405,10 @@ resource "aws_iam_policy" "rds_log_policy" {
         "rds:DescribeDBLogFiles",
         "rds:DownloadDBLogFilePortion"
       ],
-      "Resource": "${local.rds_instance_arn}"
+      "Resource": [
+        "${local.rds_instance_arn}",
+        "${local.rds_instance_arn}-*"
+      ]
     }
   ]
 }
@@ -453,7 +456,10 @@ resource "aws_iam_policy" "rds_management_policy" {
         "rds:DescribeDBLogFiles",
         "rds:DownloadDBLogFilePortion"
       ],
-      "Resource": "${local.rds_instance_arn}"
+      "Resource": [
+        "${local.rds_instance_arn}",
+        "${local.rds_instance_arn}-*"
+      ]
     },
     {
       "Sid": "RDSstartstop",
@@ -469,7 +475,8 @@ resource "aws_iam_policy" "rds_management_policy" {
       ],
       "Resource": [
         "${local.target_arn}",
-        "${local.rds_instance_arn}"
+        "${local.rds_instance_arn}",
+        "${local.rds_instance_arn}-*"
       ]
     }
   ]
