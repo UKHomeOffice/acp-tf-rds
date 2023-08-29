@@ -115,6 +115,7 @@ resource "aws_db_instance" "db_including_name" {
   skip_final_snapshot                   = var.skip_final_snapshot
   snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = var.storage_encrypted
+  iops                                  = var.iops
   storage_type                          = var.storage_type
   username                              = var.database_user
   performance_insights_enabled          = var.performance_insights_enabled

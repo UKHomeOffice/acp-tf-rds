@@ -92,7 +92,7 @@ variable "license_model" {
 }
 
 variable "storage_type" {
-  description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), or 'io1' (provisioned IOPS SSD)."
+  description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD). If you specify 'gp3' , you must also include a value for the 'iops' parameter"
   default     = "gp2"
 }
 
@@ -196,6 +196,12 @@ variable "subnet_ids" {
 variable "number_of_aurora_instances" {
   description = "The number of Aurora instances to create"
   default     = 1
+}
+
+variable "iops" {
+  description = "The amount of provisioned IOPS. Setting this implies a storage_type of `gp3`. See `notes` for limitations regarding this variable for `gp3`"
+  type        = number
+  default     = null
 }
 
 variable "publicly_accessible" {
