@@ -88,7 +88,7 @@ resource "aws_security_group_rule" "out_all" {
 resource "aws_db_instance" "db_including_name" {
   count = var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
-  name                                  = var.database_name
+  db_name                               = var.database_name
   allocated_storage                     = var.allocated_storage
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
