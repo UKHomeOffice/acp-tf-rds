@@ -239,6 +239,15 @@ resource "aws_rds_cluster" "aurora_cluster" {
   snapshot_identifier             = var.snapshot_identifier
   storage_encrypted               = var.storage_encrypted
   vpc_security_group_ids          = [aws_security_group.db.id]
+  tags = merge(
+    var.tags,
+    {
+      "Name" = format("%s-%s", var.environment, var.name)
+    },
+    {
+      "Env" = var.environment
+    },
+  )
 }
 
 # Aurora cluster instance
