@@ -84,6 +84,7 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_auto_minor_version_upgrade"></a> [auto\_minor\_version\_upgrade](#input\_auto\_minor\_version\_upgrade) | Allow automated minor version upgrade | `bool` | `false` | no |
 | <a name="input_backup_retention_period"></a> [backup\_retention\_period](#input\_backup\_retention\_period) | How long will we retain backups | `string` | `7` | no |
 | <a name="input_backup_window"></a> [backup\_window](#input\_backup\_window) | When AWS can run snapshot, can't overlap with maintenance window | `string` | `"22:00-03:00"` | no |
+| <a name="ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | Which CA to use for RDS Certificates | `string` | `"rds-ca-rsa2048-g1"` | no |
 | <a name="input_cidr_blocks"></a> [cidr\_blocks](#input\_cidr\_blocks) | A list of network cidr block which are permitted acccess | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_copy_tags_to_snapshot"></a> [copy\_tags\_to\_snapshot](#input\_copy\_tags\_to\_snapshot) | Copy tags from DB to a snapshot | `bool` | `true` | no |
 | <a name="input_custom_option_group_name"></a> [custom\_option\_group\_name](#input\_custom\_option\_group\_name) | Name of custom option group for RDS instance | `string` | `""` | no |

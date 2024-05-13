@@ -268,3 +268,8 @@ variable "snapshot_identifier" {
   description = "Specifies whether or not to create this database from a snapshot."
   default     = ""
 }
+
+variable "ca_cert_identifier" {
+  description = "Specifies the identifier of the CA certificate for the DB"
+  default     = "rds-ca-rsa2048-g1"
+}
