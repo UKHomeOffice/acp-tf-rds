@@ -120,6 +120,7 @@ resource "aws_db_instance" "db_including_name" {
   username                              = var.database_user
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period
+  ca_cert_identifier                    = var.ca_cert_identifier
   tags = merge(
     var.tags,
     {
@@ -159,6 +160,7 @@ resource "aws_db_instance" "db_read_replica" {
   storage_type                          = var.storage_type
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period
+  ca_cert_identifier                    = var.ca_cert_identifier
   tags = merge(
     var.tags,
     {
@@ -204,6 +206,7 @@ resource "aws_db_instance" "db_excluding_name" {
   username                              = var.database_user
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period
+  ca_cert_identifier                    = var.ca_cert_identifier
 
   tags = merge(
     var.tags,
@@ -264,6 +267,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   instance_class               = var.instance_class
   publicly_accessible          = var.publicly_accessible
   preferred_maintenance_window = var.maintenance_window
+  ca_cert_identifier           = var.ca_cert_identifier
   tags = merge(
     var.tags,
     {
