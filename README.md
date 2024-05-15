@@ -43,6 +43,8 @@ Module usage:
 
 ## Notes
 
+The module does not currently support Aurora I/O Optimised storage types. In order to use these, do not define `storage_type` and simply make the change in the AWS console.
+
 For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot be specified if the `allocated_storage` value is below a per-`engine` threshold. See the [RDS User Guide](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html#gp3-storage) for details.
 
 ## Resources
@@ -122,7 +124,7 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | If true (false by default), no snapshot will be made before deleting DB | `bool` | `false` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | Specifies whether or not to create this database from a snapshot. | `string` | `""` | no |
 | <a name="input_storage_encrypted"></a> [storage\_encrypted](#input\_storage\_encrypted) | Indicates you want the underlining storage to be encrypted | `bool` | `true` | no |
-| <a name="input_storage_type"></a> [storage\_type](#input\_storage\_type) | One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD). If you specify 'gp3' , you must also include a value for the 'iops' parameter | `string` | `"gp2"` | no |
+| <a name="input_storage_type"></a> [storage\_type](#input\_storage\_type) | One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD). If you specify 'gp3' , you must also include a value for the 'iops' parameter. For I/O Optimised Aurora instances, see the Notes section. | `string` | `"gp2"` | no |
 | <a name="input_subnet_group_name"></a> [subnet\_group\_name](#input\_subnet\_group\_name) | The name/ID of the subnet group for the instance | `string` | `""` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | The list of subnet IDs associated to a vpc | `list(string)` | `[]` | no |
 | <a name="input_subnet_role"></a> [subnet\_role](#input\_subnet\_role) | A role used to filter out which subnets the RDS should reside, defaults to Role=compute | `string` | `"compute"` | no |
