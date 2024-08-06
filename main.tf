@@ -40,6 +40,7 @@ locals {
     aws_rds_cluster_instance.aurora_cluster_instance.*.dbi_resource_id,
   )), [""]), 0)
   email_tags = { for i, email in var.email_addresses : "email${i}" => email }
+  iops       = var.storage_type == "gp3" && var.iops == null ? 3000 : var.iops
 }
 
 # Get the hosting zone
@@ -115,7 +116,7 @@ resource "aws_db_instance" "db_including_name" {
   skip_final_snapshot                   = var.skip_final_snapshot
   snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = var.storage_encrypted
-  iops                                  = var.iops
+  iops                                  = local.iops
   storage_type                          = var.storage_type
   username                              = var.database_user
   performance_insights_enabled          = var.performance_insights_enabled
