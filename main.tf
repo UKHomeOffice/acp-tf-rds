@@ -266,7 +266,6 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   cluster_identifier              = aws_rds_cluster.aurora_cluster[0].id
   db_subnet_group_name            = local.db_subnet_group_name
   db_parameter_group_name         = aws_db_parameter_group.db.id
-  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   engine                          = var.engine_type
   identifier                      = "${var.name}${count.index > 0 ? "-${count.index}" : ""}"
   instance_class                  = var.instance_class
