@@ -233,6 +233,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   database_name                   = var.database_name
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.db[0].id
   db_subnet_group_name            = local.db_subnet_group_name
+  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
   engine                          = var.engine_type
   engine_version                  = var.engine_version
   final_snapshot_identifier       = var.name
@@ -260,17 +261,18 @@ resource "aws_rds_cluster" "aurora_cluster" {
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? var.number_of_aurora_instances : 0
 
-  auto_minor_version_upgrade   = var.auto_minor_version_upgrade
-  apply_immediately            = var.apply_immediately
-  cluster_identifier           = aws_rds_cluster.aurora_cluster[0].id
-  db_subnet_group_name         = local.db_subnet_group_name
-  db_parameter_group_name      = aws_db_parameter_group.db.id
-  engine                       = var.engine_type
-  identifier                   = "${var.name}${count.index > 0 ? "-${count.index}" : ""}"
-  instance_class               = var.instance_class
-  publicly_accessible          = var.publicly_accessible
-  preferred_maintenance_window = var.maintenance_window
-  ca_cert_identifier           = var.ca_cert_identifier
+  auto_minor_version_upgrade      = var.auto_minor_version_upgrade
+  apply_immediately               = var.apply_immediately
+  cluster_identifier              = aws_rds_cluster.aurora_cluster[0].id
+  db_subnet_group_name            = local.db_subnet_group_name
+  db_parameter_group_name         = aws_db_parameter_group.db.id
+  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
+  engine                          = var.engine_type
+  identifier                      = "${var.name}${count.index > 0 ? "-${count.index}" : ""}"
+  instance_class                  = var.instance_class
+  publicly_accessible             = var.publicly_accessible
+  preferred_maintenance_window    = var.maintenance_window
+  ca_cert_identifier              = var.ca_cert_identifier
   tags = merge(
     var.tags,
     {
