@@ -103,7 +103,7 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_dns_type"></a> [dns\_type](#input\_dns\_type) | The dns record type for the RDS instance, defaults to CNAME | `string` | `"CNAME"` | no |
 | <a name="input_dns_zone"></a> [dns\_zone](#input\_dns\_zone) | The required route53 domain name we are added the dns entry to i.e. example.com | `any` | n/a | yes |
 | <a name="input_email_addresses"></a> [email\_addresses](#input\_email\_addresses) | A list of email addresses for key rotation notifications. | `list(string)` | `[]` | no |
-| <a name="input_enabled_cloudwatch_log_exports"></a> [enabled\_cloudwatch\_log\_exports](#input\enabled\cloudwatch\_log\_exports) | Set of log types to enable for exporting to CloudWatch logs - by default, no logs will be exported. Valid values vary depending on engine. | `list(string)` | `[]` | no |
+| <a name="input_enabled_cloudwatch_logs_exports"></a> [enabled\_cloudwatch\_logs\_exports](#input\enabled\cloudwatch\_logs\_exports) | Set of log types to enable for exporting to CloudWatch logs - by default, no logs will be exported. Valid values vary depending on engine. | `list(string)` | `[]` | no |
 | <a name="input_engine_type"></a> [engine\_type](#input\_engine\_type) | Database engine type | `any` | n/a | yes |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Database engine version, depends on engine type | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment the RDS is running in i.e. dev, prod etc | `any` | n/a | yes |
