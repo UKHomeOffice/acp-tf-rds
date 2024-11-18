@@ -273,3 +273,9 @@ variable "ca_cert_identifier" {
   description = "Specifies the identifier of the CA certificate for the DB"
   default     = "rds-ca-rsa2048-g1"
 }
+
+variable "enabled_cloudwatch_logs_exports" {
+  description = "Set of log types to enable for exporting to CloudWatch logs - by default, no logs will be exported. Valid values vary depending on engine."
+  type        = list(string)
+  default     = []
+}

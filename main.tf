@@ -1,6 +1,6 @@
 /**
  * Module usage:
- * 
+ *
  *     module "rds" {
  *        source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
  *
@@ -97,6 +97,7 @@ resource "aws_db_instance" "db_including_name" {
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   db_subnet_group_name                  = local.db_subnet_group_name
+  enabled_cloudwatch_logs_exports       = var.enabled_cloudwatch_logs_exports
   engine                                = var.engine_type
   engine_version                        = var.engine_version
   final_snapshot_identifier             = var.name
@@ -142,6 +143,7 @@ resource "aws_db_instance" "db_read_replica" {
   backup_retention_period               = var.backup_retention_period
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
+  enabled_cloudwatch_logs_exports       = var.enabled_cloudwatch_logs_exports
   final_snapshot_identifier             = var.name
   identifier                            = var.name
   instance_class                        = var.instance_class
@@ -184,6 +186,7 @@ resource "aws_db_instance" "db_excluding_name" {
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   db_subnet_group_name                  = local.db_subnet_group_name
+  enabled_cloudwatch_logs_exports       = var.enabled_cloudwatch_logs_exports
   engine                                = var.engine_type
   engine_version                        = var.engine_version
   final_snapshot_identifier             = var.name
