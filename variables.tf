@@ -276,5 +276,6 @@ variable "ca_cert_identifier" {
 
 variable "enabled_cloudwatch_logs_exports" {
   description = "Set of log types to enable for exporting to CloudWatch logs - by default, no logs will be exported. Valid values vary depending on engine."
-  default     = ""
+  type        = list(string)
+  default     = []
 }
