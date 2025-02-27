@@ -279,3 +279,9 @@ variable "enabled_cloudwatch_logs_exports" {
   type        = list(string)
   default     = []
 }
+
+variable "deletion_protection" {
+  description = "Enables deletion protection for the RDS instance. When set to true, the instance cannot be deleted unless this setting is disabled."
+  type        = bool
+  default     = false
+}
