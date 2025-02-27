@@ -247,6 +247,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   snapshot_identifier             = var.snapshot_identifier
   storage_encrypted               = var.storage_encrypted
   vpc_security_group_ids          = [aws_security_group.db.id]
+  deletion_protection             = var.deletion_protection
   tags = merge(
     var.tags,
     {
