@@ -122,6 +122,7 @@ resource "aws_db_instance" "db_including_name" {
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period
   ca_cert_identifier                    = var.ca_cert_identifier
+  deletion_protection                   = var.deletion_protection
   tags = merge(
     var.tags,
     {
@@ -246,6 +247,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   snapshot_identifier             = var.snapshot_identifier
   storage_encrypted               = var.storage_encrypted
   vpc_security_group_ids          = [aws_security_group.db.id]
+  deletion_protection             = var.deletion_protection
   tags = merge(
     var.tags,
     {
@@ -261,17 +263,17 @@ resource "aws_rds_cluster" "aurora_cluster" {
 resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? var.number_of_aurora_instances : 0
 
-  auto_minor_version_upgrade      = var.auto_minor_version_upgrade
-  apply_immediately               = var.apply_immediately
-  cluster_identifier              = aws_rds_cluster.aurora_cluster[0].id
-  db_subnet_group_name            = local.db_subnet_group_name
-  db_parameter_group_name         = aws_db_parameter_group.db.id
-  engine                          = var.engine_type
-  identifier                      = "${var.name}${count.index > 0 ? "-${count.index}" : ""}"
-  instance_class                  = var.instance_class
-  publicly_accessible             = var.publicly_accessible
-  preferred_maintenance_window    = var.maintenance_window
-  ca_cert_identifier              = var.ca_cert_identifier
+  auto_minor_version_upgrade   = var.auto_minor_version_upgrade
+  apply_immediately            = var.apply_immediately
+  cluster_identifier           = aws_rds_cluster.aurora_cluster[0].id
+  db_subnet_group_name         = local.db_subnet_group_name
+  db_parameter_group_name      = aws_db_parameter_group.db.id
+  engine                       = var.engine_type
+  identifier                   = "${var.name}${count.index > 0 ? "-${count.index}" : ""}"
+  instance_class               = var.instance_class
+  publicly_accessible          = var.publicly_accessible
+  preferred_maintenance_window = var.maintenance_window
+  ca_cert_identifier           = var.ca_cert_identifier
   tags = merge(
     var.tags,
     {

@@ -131,6 +131,7 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_subnet_role"></a> [subnet\_role](#input\_subnet\_role) | A role used to filter out which subnets the RDS should reside, defaults to Role=compute | `string` | `"compute"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The VPC ID to create the resources within | `any` | n/a | yes |
+| <a name="deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | Enables deletion protection for the RDS instance. When set to true, the instance cannot be deleted unless this setting is disabled. | `bool` | false | no |
 
 ## Outputs
 
