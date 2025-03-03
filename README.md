@@ -41,12 +41,6 @@ Module usage:
 |------|--------|---------|
 | <a name="module_self_serve_access_keys"></a> [self\_serve\_access\_keys](#module\_self\_serve\_access\_keys) | git::https://github.com/UKHomeOffice/acp-tf-self-serve-access-keys | v0.1.0 |
 
-## Notes
-
-The module does not currently support Aurora I/O Optimised storage types. In order to use these, do not define `storage_type` and simply make the change in the AWS console.
-
-For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot be specified if the `allocated_storage` value is below a per-`engine` threshold. See the [RDS User Guide](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html#gp3-storage) for details.
-
 ## Resources
 
 | Name | Type |
@@ -86,8 +80,8 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_auto_minor_version_upgrade"></a> [auto\_minor\_version\_upgrade](#input\_auto\_minor\_version\_upgrade) | Allow automated minor version upgrade | `bool` | `false` | no |
 | <a name="input_backup_retention_period"></a> [backup\_retention\_period](#input\_backup\_retention\_period) | How long will we retain backups | `string` | `7` | no |
 | <a name="input_backup_window"></a> [backup\_window](#input\_backup\_window) | When AWS can run snapshot, can't overlap with maintenance window | `string` | `"22:00-03:00"` | no |
-| <a name="ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | Which CA to use for RDS Certificates | `string` | `"rds-ca-rsa2048-g1"` | no |
-| <a name="input_cidr_blocks"></a> [cidr\_blocks](#input\_cidr\_blocks) | A list of network cidr block which are permitted acccess | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
+| <a name="input_ca_cert_identifier"></a> [ca\_cert\_identifier](#input\_ca\_cert\_identifier) | Specifies the identifier of the CA certificate for the DB | `string` | `"rds-ca-rsa2048-g1"` | no |
+| <a name="input_cidr_blocks"></a> [cidr\_blocks](#input\_cidr\_blocks) | A list of network cidr block which are permitted acccess | `list(string)` | <pre>[<br/>  "0.0.0.0/0"<br/>]</pre> | no |
 | <a name="input_copy_tags_to_snapshot"></a> [copy\_tags\_to\_snapshot](#input\_copy\_tags\_to\_snapshot) | Copy tags from DB to a snapshot | `bool` | `true` | no |
 | <a name="input_custom_option_group_name"></a> [custom\_option\_group\_name](#input\_custom\_option\_group\_name) | Name of custom option group for RDS instance | `string` | `""` | no |
 | <a name="input_database_name"></a> [database\_name](#input\_database\_name) | The name of the database to create | `string` | `""` | no |
@@ -98,17 +92,18 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_db_cluster_parameters"></a> [db\_cluster\_parameters](#input\_db\_cluster\_parameters) | A map of database parameters for the RDS Cluster instance | `list(map(string))` | `[]` | no |
 | <a name="input_db_parameter_family"></a> [db\_parameter\_family](#input\_db\_parameter\_family) | Parameter group, depends on DB engine used | `any` | n/a | yes |
 | <a name="input_db_parameters"></a> [db\_parameters](#input\_db\_parameters) | A map of database parameters for the RDS instance | `list(map(string))` | `[]` | no |
+| <a name="input_deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | Enables deletion protection for the RDS instance. When set to true, the instance cannot be deleted unless this setting is disabled. | `bool` | `false` | no |
 | <a name="input_dns_name"></a> [dns\_name](#input\_dns\_name) | The dns name added the dns zone, else defaults to var.name | `string` | `""` | no |
 | <a name="input_dns_ttl"></a> [dns\_ttl](#input\_dns\_ttl) | The dns record type for the RDS instance, defaults to CNAME | `string` | `"300"` | no |
 | <a name="input_dns_type"></a> [dns\_type](#input\_dns\_type) | The dns record type for the RDS instance, defaults to CNAME | `string` | `"CNAME"` | no |
 | <a name="input_dns_zone"></a> [dns\_zone](#input\_dns\_zone) | The required route53 domain name we are added the dns entry to i.e. example.com | `any` | n/a | yes |
 | <a name="input_email_addresses"></a> [email\_addresses](#input\_email\_addresses) | A list of email addresses for key rotation notifications. | `list(string)` | `[]` | no |
-| <a name="input_enabled_cloudwatch_logs_exports"></a> [enabled\_cloudwatch\_logs\_exports](#input\enabled\cloudwatch\_logs\_exports) | Set of log types to enable for exporting to CloudWatch logs - by default, no logs will be exported. Valid values vary depending on engine. | `list(string)` | `[]` | no |
+| <a name="input_enabled_cloudwatch_logs_exports"></a> [enabled\_cloudwatch\_logs\_exports](#input\_enabled\_cloudwatch\_logs\_exports) | Set of log types to enable for exporting to CloudWatch logs - by default, no logs will be exported. Valid values vary depending on engine. | `list(string)` | `[]` | no |
 | <a name="input_engine_type"></a> [engine\_type](#input\_engine\_type) | Database engine type | `any` | n/a | yes |
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Database engine version, depends on engine type | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment the RDS is running in i.e. dev, prod etc | `any` | n/a | yes |
 | <a name="input_instance_class"></a> [instance\_class](#input\_instance\_class) | Class of RDS instance | `string` | `"db.t2.medium"` | no |
-| <a name="input_iops"></a> [iops](#input\_iops) | The amount of provisioned IOPS. Setting this implies a storage\_type of 'io1' or `gp3`. See `notes` for limitations regarding this variable for `gp3` | `number` | `null` | no |
+| <a name="input_iops"></a> [iops](#input\_iops) | The amount of provisioned IOPS. Setting this implies a storage\_type of `gp3`. See `notes` for limitations regarding this variable for `gp3` | `number` | `null` | no |
 | <a name="input_is_multi_az"></a> [is\_multi\_az](#input\_is\_multi\_az) | Set to true on production | `bool` | `false` | no |
 | <a name="input_key_rotation"></a> [key\_rotation](#input\_key\_rotation) | Enable email notifications for old IAM keys. | `string` | `"true"` | no |
 | <a name="input_license_model"></a> [license\_model](#input\_license\_model) | License model information required for some DBs like Oracle SE2 | `string` | `""` | no |
@@ -125,13 +120,12 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_skip_final_snapshot"></a> [skip\_final\_snapshot](#input\_skip\_final\_snapshot) | If true (false by default), no snapshot will be made before deleting DB | `bool` | `false` | no |
 | <a name="input_snapshot_identifier"></a> [snapshot\_identifier](#input\_snapshot\_identifier) | Specifies whether or not to create this database from a snapshot. | `string` | `""` | no |
 | <a name="input_storage_encrypted"></a> [storage\_encrypted](#input\_storage\_encrypted) | Indicates you want the underlining storage to be encrypted | `bool` | `true` | no |
-| <a name="input_storage_type"></a> [storage\_type](#input\_storage\_type) | One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD). If you specify 'gp3' , you must also include a value for the 'iops' parameter. For I/O Optimised Aurora instances, see the Notes section. | `string` | `"gp2"` | no |
+| <a name="input_storage_type"></a> [storage\_type](#input\_storage\_type) | One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD). If you specify 'gp3' , you must also include a value for the 'iops' parameter | `string` | `"gp2"` | no |
 | <a name="input_subnet_group_name"></a> [subnet\_group\_name](#input\_subnet\_group\_name) | The name/ID of the subnet group for the instance | `string` | `""` | no |
 | <a name="input_subnet_ids"></a> [subnet\_ids](#input\_subnet\_ids) | The list of subnet IDs associated to a vpc | `list(string)` | `[]` | no |
 | <a name="input_subnet_role"></a> [subnet\_role](#input\_subnet\_role) | A role used to filter out which subnets the RDS should reside, defaults to Role=compute | `string` | `"compute"` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | A map of tags to add to all resources | `map(string)` | `{}` | no |
 | <a name="input_vpc_id"></a> [vpc\_id](#input\_vpc\_id) | The VPC ID to create the resources within | `any` | n/a | yes |
-| <a name="deletion_protection"></a> [deletion\_protection](#input\_deletion\_protection) | Enables deletion protection for the RDS instance. When set to true, the instance cannot be deleted unless this setting is disabled. | `bool` | false | no |
 
 ## Outputs
 
