@@ -285,3 +285,17 @@ variable "deletion_protection" {
   type        = bool
   default     = false
 }
+
+variable "db_character_set" {
+  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.OracleCharacterSets.html
+  description = "Character set name to use for DB encoding in Oracle/MSSQL"
+  type        = string
+  default     = null
+}
+
+variable "db_character_set_nchar" {
+  # https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Appendix.OracleCharacterSets.html
+  description = "National character set name to use for DB encoding in Oracle/MSSQL"
+  type        = string
+  default     = null
+}

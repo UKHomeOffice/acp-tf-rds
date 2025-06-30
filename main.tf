@@ -97,6 +97,8 @@ resource "aws_db_instance" "db_including_name" {
   backup_window                         = var.backup_window
   copy_tags_to_snapshot                 = var.copy_tags_to_snapshot
   db_subnet_group_name                  = local.db_subnet_group_name
+  character_set_name                    = var.db_character_set
+  nchar_character_set_name              = var.db_character_set_nchar
   enabled_cloudwatch_logs_exports       = var.enabled_cloudwatch_logs_exports
   engine                                = var.engine_type
   engine_version                        = var.engine_version

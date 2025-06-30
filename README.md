@@ -94,6 +94,8 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_database_password"></a> [database\_password](#input\_database\_password) | The default password for the specified user for RDS | `any` | n/a | yes |
 | <a name="input_database_port"></a> [database\_port](#input\_database\_port) | The database port being used by the RDS instance, i.e. 3306, 5342 | `any` | n/a | yes |
 | <a name="input_database_user"></a> [database\_user](#input\_database\_user) | The username for the RDS to be created | `string` | `"root"` | no |
+| <a name="input_db_character_set"></a> [db\_character\_set](#input\_db\_character\_set) | Character set name to use for DB encoding in Oracle/MSSQL | `string` | `null` | no |
+| <a name="input_db_character_set_nchar"></a> [db\_character\_set\_nchar](#input\_db\_character\_set\_nchar) | National character set name to use for DB encoding in Oracle/MSSQL | `string` | `null` | no |
 | <a name="input_db_cluster_parameter_family"></a> [db\_cluster\_parameter\_family](#input\_db\_cluster\_parameter\_family) | Cluster parameter group, depends on DB engine used | `string` | `""` | no |
 | <a name="input_db_cluster_parameters"></a> [db\_cluster\_parameters](#input\_db\_cluster\_parameters) | A map of database parameters for the RDS Cluster instance | `list(map(string))` | `[]` | no |
 | <a name="input_db_parameter_family"></a> [db\_parameter\_family](#input\_db\_parameter\_family) | Parameter group, depends on DB engine used | `any` | n/a | yes |
