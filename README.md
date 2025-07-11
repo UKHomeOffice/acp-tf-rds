@@ -46,6 +46,7 @@ Module usage:
 The module does not currently support Aurora I/O Optimised storage types. In order to use these, do not define `storage_type` and simply make the change in the AWS console.
 
 For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot be specified if the `allocated_storage` value is below a per-`engine` threshold. See the [RDS User Guide](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html#gp3-storage) for details.
+If the `storage_type` is set to `gp3` but `iops` is unspecified, this module will determine an appropriate baseline value.
 
 ## Resources
 
@@ -110,7 +111,7 @@ For an RDS instance with `storage_type` using `gp3`, be aware that `iops` cannot
 | <a name="input_engine_version"></a> [engine\_version](#input\_engine\_version) | Database engine version, depends on engine type | `any` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | The environment the RDS is running in i.e. dev, prod etc | `any` | n/a | yes |
 | <a name="input_instance_class"></a> [instance\_class](#input\_instance\_class) | Class of RDS instance | `string` | `"db.t2.medium"` | no |
-| <a name="input_iops"></a> [iops](#input\_iops) | The amount of provisioned IOPS. Setting this implies a storage\_type of 'io1' or `gp3`. See `notes` for limitations regarding this variable for `gp3` | `number` | `null` | no |
+| <a name="input_iops"></a> [iops](#input\_iops) | The amount of provisioned IOPS. See `notes` for limitations regarding this variable for `gp3` | `number` | `null` | no |
 | <a name="input_is_multi_az"></a> [is\_multi\_az](#input\_is\_multi\_az) | Set to true on production | `bool` | `false` | no |
 | <a name="input_key_rotation"></a> [key\_rotation](#input\_key\_rotation) | Enable email notifications for old IAM keys. | `string` | `"true"` | no |
 | <a name="input_license_model"></a> [license\_model](#input\_license\_model) | License model information required for some DBs like Oracle SE2 | `string` | `""` | no |
