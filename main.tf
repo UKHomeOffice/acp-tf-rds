@@ -40,6 +40,19 @@ locals {
     aws_rds_cluster_instance.aurora_cluster_instance.*.dbi_resource_id,
   )), [""]), 0)
   email_tags = { for i, email in var.email_addresses : "email${i}" => email }
+
+  iops = coalesce( // pick first non-null value from the following:
+    var.iops,
+    var.storage_type == "gp3" ? coalesce( // if gp3, set a sensible default:
+      // if MSSQL always return 3000
+      startswith(var.engine_type, "sqlserver") ? 3000 : null,
+      // if Oracle return 3000 if less than 200GiB else 12000
+      (var.allocated_storage >= 200 && startswith(var.engine_type, "oracle")) ? 12000 : null,
+      startswith(var.engine_type, "oracle") ? 3000 : null,
+      // otherwise return 3000 if les than 400GiB else 12000
+      var.allocated_storage >= 400 ? 12000 : 3000
+    ) : null
+  )
 }
 
 # Get the hosting zone
@@ -118,7 +131,7 @@ resource "aws_db_instance" "db_including_name" {
   skip_final_snapshot                   = var.skip_final_snapshot
   snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = var.storage_encrypted
-  iops                                  = var.iops
+  iops                                  = local.iops
   storage_type                          = var.storage_type
   username                              = var.database_user
   performance_insights_enabled          = var.performance_insights_enabled
