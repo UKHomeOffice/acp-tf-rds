@@ -41,7 +41,7 @@ locals {
   )), [""]), 0)
   email_tags = { for i, email in var.email_addresses : "email${i}" => email }
 
-  iops = coalesce( // pick first non-null value from the following:
+  iops = try( // pick first non-null value from the following:
     var.iops,
     var.storage_type == "gp3" ? coalesce( // if gp3, set a sensible default:
       // if MSSQL always return 3000
@@ -51,7 +51,8 @@ locals {
       startswith(var.engine_type, "oracle") ? 3000 : null,
       // otherwise return 3000 if les than 400GiB else 12000
       var.allocated_storage >= 400 ? 12000 : 3000
-    ) : null
+    ) : null,
+    null
   )
 }
 
