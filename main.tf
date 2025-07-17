@@ -45,10 +45,9 @@ locals {
     coalesce( // if gp3, pick first non-null value from the following:
       var.iops,
       // if MSSQL always return 3000
-      startswith(var.engine_type, "sqlserver") ? 3000 : null,
+      substr(var.engine_type, 0, 9) == "sqlserver" ? 3000 : null,
       // if Oracle return 3000 if less than 200GiB else 12000
-      (var.allocated_storage >= 200 && startswith(var.engine_type, "oracle")) ? 12000 : null,
-      startswith(var.engine_type, "oracle") ? 3000 : null,
+      substr(var.engine_type, 0, 6) == "oracle" ? var.allocated_storage >= 200 ? 12000 : 3000 : null,
       // otherwise return 3000 if less than 400GiB else 12000
       var.allocated_storage >= 400 ? 12000 : 3000
     )
