@@ -46,10 +46,10 @@ locals {
       var.iops,
       // if MSSQL always return 3000
       substr(var.engine_type, 0, 9) == "sqlserver" ? 3000 : null,
-      // if Oracle return 3000 if less than 200GiB else 12000
-      substr(var.engine_type, 0, 6) == "oracle" ? var.allocated_storage >= 200 ? 12000 : 3000 : null,
-      // otherwise return 3000 if less than 400GiB else 12000
-      var.allocated_storage >= 400 ? 12000 : 3000
+      // if Oracle return 12000 if more than 200GiB
+      substr(var.engine_type, 0, 6) == "oracle" ? var.allocated_storage >= 200 ? 12000 : null : null,
+      // otherwise return 12000 if more than 400GiB
+      var.allocated_storage >= 400 ? 12000 : null
     )
   , null) : var.iops // if no option matches, return null; if not gp3, return var.iops
 }
