@@ -146,6 +146,12 @@ resource "aws_db_instance" "db_including_name" {
       "Env" = var.environment
     },
   )
+
+  lifecycle {
+    ignore_changes = [
+      iops
+    ]
+  }
 }
 
 # The database instance itself with read replica
@@ -188,6 +194,12 @@ resource "aws_db_instance" "db_read_replica" {
       "Env" = var.environment
     },
   )
+
+  lifecycle {
+    ignore_changes = [
+      iops
+    ]
+  }
 }
 
 # The database instance without created database
@@ -237,6 +249,12 @@ resource "aws_db_instance" "db_excluding_name" {
       "Env" = var.environment
     },
   )
+
+  lifecycle {
+    ignore_changes = [
+      iops
+    ]
+  }
 }
 
 # Cluster for Amazon Aurora
