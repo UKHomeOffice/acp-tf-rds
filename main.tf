@@ -303,10 +303,14 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
 # Create the database parameters
 resource "aws_db_parameter_group" "db" {
-  name = "${var.name}-db-parameters"
+  name_prefix = "${var.name}-db-parameters-"
 
   description = "Database Parameters Group for RDS: ${var.environment}.${var.name}"
   family      = var.db_parameter_family
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   dynamic "parameter" {
     for_each = var.db_parameters
@@ -332,10 +336,14 @@ resource "aws_db_parameter_group" "db" {
 resource "aws_rds_cluster_parameter_group" "db" {
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0
 
-  name = "${var.name}-cluster-db-parameters"
+  name_prefix = "${var.name}-cluster-db-parameters-"
 
   description = "Database Parameters Group for RDS cluster: ${var.environment}.${var.name}"
   family      = var.db_cluster_parameter_family
+
+  lifecycle {
+    create_before_destroy = true
+  }
 
   dynamic "parameter" {
     for_each = var.db_cluster_parameters
