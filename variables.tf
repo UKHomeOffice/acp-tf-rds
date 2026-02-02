@@ -1,5 +1,10 @@
 variable "name" {
   description = "A descriptive name for the RDS instance (leave blank only when rds requires it to be blank)"
+
+  validation {
+    condition     = can(regex("^(?![0-9])[a-z0-9-]{1,63}$", var.name))
+    error_message = "The name value can only be letters and numbers, fewer than 64 characters, and not start with a number."
+  }
 }
 
 variable "environment" {
