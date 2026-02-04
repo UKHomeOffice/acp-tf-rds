@@ -180,6 +180,21 @@ variable "tags" {
   description = "A map of tags to add to all resources"
   type        = map(string)
   default     = {}
+
+  validation {
+    condition = can(
+      # https://github.com/appvia/rds-scheduler/blob/b5e9ce19ac63872b753e3eff5d55b039a936f0b2/lib/time_schedule_parser.rb#L17
+      regex(
+        "^([a-zA-Z]{3})-([a-zA-Z]{3}) ([0-9]{2}):([0-9]{2})-([0-9]{2}):([0-9]{2}) ([a-zA-Z/_]+)$",
+        lookup(
+          var.tags,
+          "appvia.io/rds-scheduler/uptime-schedule",
+          "Mon-Fri 09:00-17:30 Europe/London" # if not set, validate an example to force a pass
+        )
+      )
+    )
+    error_message = "The uptime-scheduler tag must match the format required by the rds-scheduler application."
+  }
 }
 
 variable "vpc_id" {
