@@ -93,7 +93,7 @@ variable "license_model" {
 
 variable "storage_type" {
   description = "One of 'standard' (magnetic), 'gp2' (general purpose SSD), 'gp3' (new generation of general purpose SSD), or 'io1' (provisioned IOPS SSD)."
-  default     = "gp2"
+  default     = "gp3"
 }
 
 variable "storage_encrypted" {
