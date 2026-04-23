@@ -175,7 +175,7 @@ resource "aws_db_instance" "db_read_replica" {
   snapshot_identifier                   = var.snapshot_identifier
   storage_encrypted                     = var.storage_encrypted
   storage_type                          = var.storage_type
-  iops                                  = local.iops
+  iops                                  = var.storage_type == "gp3" ? var.iops : null
   performance_insights_enabled          = var.performance_insights_enabled
   performance_insights_retention_period = var.performance_insights_retention_period
   ca_cert_identifier                    = var.ca_cert_identifier
