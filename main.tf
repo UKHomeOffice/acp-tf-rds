@@ -244,6 +244,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   # aurora = MySQL 5.6-compatible, aurora-mysql = MySQL 5.7-compatible
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0
 
+  allow_major_version_upgrade     = var.allow_major_version_upgrade
   apply_immediately               = var.apply_immediately
   backup_retention_period         = var.backup_retention_period
   cluster_identifier              = var.name
