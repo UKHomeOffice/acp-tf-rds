@@ -246,6 +246,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
 
   allow_major_version_upgrade     = var.allow_major_version_upgrade
   apply_immediately               = var.apply_immediately
+  db_instance_parameter_group_name = var.allow_major_version_upgrade ? aws_db_parameter_group.db.id : null
   backup_retention_period         = var.backup_retention_period
   cluster_identifier              = var.name
   database_name                   = var.database_name
