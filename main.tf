@@ -244,28 +244,28 @@ resource "aws_rds_cluster" "aurora_cluster" {
   # aurora = MySQL 5.6-compatible, aurora-mysql = MySQL 5.7-compatible
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0
 
-  allow_major_version_upgrade     = var.allow_major_version_upgrade
-  apply_immediately               = var.apply_immediately
+  allow_major_version_upgrade      = var.allow_major_version_upgrade
+  apply_immediately                = var.apply_immediately
   db_instance_parameter_group_name = var.allow_major_version_upgrade ? aws_db_parameter_group.db.id : null
-  backup_retention_period         = var.backup_retention_period
-  cluster_identifier              = var.name
-  database_name                   = var.database_name
-  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.db[0].id
-  db_subnet_group_name            = local.db_subnet_group_name
-  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
-  engine                          = var.engine_type
-  engine_version                  = var.engine_version
-  final_snapshot_identifier       = var.name
-  master_password                 = var.database_password
-  master_username                 = var.database_user
-  port                            = var.database_port
-  preferred_backup_window         = var.backup_window
-  preferred_maintenance_window    = var.maintenance_window
-  skip_final_snapshot             = var.skip_final_snapshot
-  snapshot_identifier             = var.snapshot_identifier
-  storage_encrypted               = var.storage_encrypted
-  vpc_security_group_ids          = [aws_security_group.db.id]
-  deletion_protection             = var.deletion_protection
+  backup_retention_period          = var.backup_retention_period
+  cluster_identifier               = var.name
+  database_name                    = var.database_name
+  db_cluster_parameter_group_name  = aws_rds_cluster_parameter_group.db[0].id
+  db_subnet_group_name             = local.db_subnet_group_name
+  enabled_cloudwatch_logs_exports  = var.enabled_cloudwatch_logs_exports
+  engine                           = var.engine_type
+  engine_version                   = var.engine_version
+  final_snapshot_identifier        = var.name
+  master_password                  = var.database_password
+  master_username                  = var.database_user
+  port                             = var.database_port
+  preferred_backup_window          = var.backup_window
+  preferred_maintenance_window     = var.maintenance_window
+  skip_final_snapshot              = var.skip_final_snapshot
+  snapshot_identifier              = var.snapshot_identifier
+  storage_encrypted                = var.storage_encrypted
+  vpc_security_group_ids           = [aws_security_group.db.id]
+  deletion_protection              = var.deletion_protection
   tags = merge(
     var.tags,
     {
@@ -305,7 +305,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
 # Create the database parameters
 resource "aws_db_parameter_group" "db" {
-  name_prefix = "${var.name}-db-parameters-${var.db_parameter_family}-"
+  name_prefix = "${var.name}-db-parameters-${replace(var.db_parameter_family, ".", "-")}-"
 
   description = "Database Parameters Group for RDS: ${var.environment}.${var.name}"
   family      = var.db_parameter_family
