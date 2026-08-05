@@ -305,7 +305,7 @@ resource "aws_rds_cluster_instance" "aurora_cluster_instance" {
 
 # Create the database parameters
 resource "aws_db_parameter_group" "db" {
-  name_prefix = "${var.name}-db-parameters-${var.db_parameter_family}-"
+  name_prefix = "${var.name}-db-parameters-${replace(var.db_parameter_family, ".", "-")}-"
 
   description = "Database Parameters Group for RDS: ${var.environment}.${var.name}"
   family      = var.db_parameter_family
