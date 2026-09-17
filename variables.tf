@@ -27,6 +27,18 @@ variable "database_user" {
 
 variable "database_password" {
   description = "The default password for the specified user for RDS"
+  default     = ""
+}
+
+variable "manage_master_user_password" {
+  description = "Allow RDS to manage the master password in AWS Secrets Manager"
+  type        = bool
+  default     = false
+
+  validation {
+    condition = !( var.manage_master_user_password && var.database_password != "")
+    error_message = "database_password and manage_master_user_password cannot be used together for non-Aurora engine types"
+  }
 }
 
 variable "database_port" {

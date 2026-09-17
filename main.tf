@@ -4,7 +4,7 @@
  *     module "rds" {
  *        source                = "git::https://github.com/UKHomeOffice/acp-tf-rds?ref=master"
  *
- *         name                         = "fake"
+ *         db_name                         = "fake"
  *        allocated_storage            = "20"
  *        apply_immediately            = false
  *        cidr_blocks                  = ["${values(var.compute.cidrs)}"]
@@ -100,7 +100,7 @@ resource "aws_security_group_rule" "out_all" {
 resource "aws_db_instance" "db_including_name" {
   count = var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
-  name                                  = var.database_name
+  db_name                                  = var.database_name
   allocated_storage                     = var.allocated_storage
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
@@ -123,7 +123,8 @@ resource "aws_db_instance" "db_including_name" {
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
   option_group_name                     = var.custom_option_group_name != "" ? var.custom_option_group_name : null
-  password                              = var.database_password
+  manage_master_user_password           = var.manage_master_user_password
+  password                              = var.manage_master_user_password ? null : var.database_password
   port                                  = var.database_port
   publicly_accessible                   = var.publicly_accessible
   vpc_security_group_ids                = [aws_security_group.db.id]
@@ -214,7 +215,8 @@ resource "aws_db_instance" "db_excluding_name" {
   multi_az                              = var.is_multi_az
   parameter_group_name                  = aws_db_parameter_group.db.id
   option_group_name                     = var.custom_option_group_name != "" ? var.custom_option_group_name : null
-  password                              = var.database_password
+  manage_master_user_password           = var.manage_master_user_password
+  password                              = var.manage_master_user_password ? null : var.database_password
   port                                  = var.database_port
   publicly_accessible                   = var.publicly_accessible
   vpc_security_group_ids                = [aws_security_group.db.id]
