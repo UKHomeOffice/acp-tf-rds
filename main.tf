@@ -54,6 +54,10 @@ locals {
   , null) : var.iops // if no option matches, return null; if not gp3, return var.iops
 }
 
+output var_dns_zone {
+  value = var.dns_zone
+}
+
 # Get the hosting zone
 data "aws_route53_zone" "selected" {
   name = "${var.dns_zone}."
@@ -422,7 +426,7 @@ resource "aws_route53_record" "dns_excluding_dbname" {
 
 # User with access to RDS logs
 resource "aws_iam_user" "rds_logs_iam_user" {
-  count = var.log_access_enabled ? 1 : 0
+  count = var.account_type == "acp" && var.log_access_enabled ? 1 : 0
 
   name = "${var.name}-Logs"
 

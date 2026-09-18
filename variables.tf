@@ -25,19 +25,41 @@ variable "database_user" {
   default     = "root"
 }
 
-variable "database_password" {
-  description = "The default password for the specified user for RDS"
-  default     = ""
+variable "account_type" {
+  description = "cc or acp. this will change key behaviour"
+  type        = string
+  default     = "acp"
 }
 
 variable "manage_master_user_password" {
-  description = "Allow RDS to manage the master password in AWS Secrets Manager"
+  description = "boolean for AWS to manage the RDS password - with a passed-in password or managed behind the scenes betweemn rds and secrets manager"
   type        = bool
   default     = false
+}
+
+variable "database_password" {
+  description = "The default password for the specified user for RDS"
+  type    = string
+  default = ""
 
   validation {
-    condition = !( var.manage_master_user_password && var.database_password != "")
-    error_message = "database_password and manage_master_user_password cannot be used together for non-Aurora engine types"
+    condition = (
+      ( var.account_type == "acp" && var.database_password == "")
+      ||
+      ( var.account_type == "cc" && var.manage_master_user_password == true && var.database_password == "")
+      ||
+      ( var.account_type == "acp" && ( var.manage_master_user_password == false || var.manage_master_user_password == null) && var.database_password != "")
+    )
+
+    error_message = <<EOT
+For account_type="cc":
+  - manage_master_user_password must be true
+  - database_password must be empty
+
+For account_type="acp":
+  - manage_master_user_password must be false or unset
+  - database_password must be provided
+EOT
   }
 }
 
