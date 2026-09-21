@@ -25,7 +25,7 @@ variable "database_user" {
   default     = "root"
 }
 
-variable "account_type" {
+variable "org_moniker" {
   description = "cc or acp. this will change key behaviour"
   type        = string
   default     = "acp"
@@ -44,19 +44,19 @@ variable "database_password" {
 
   validation {
     condition = (
-      ( var.account_type == "acp" && var.database_password == "")
+      ( var.org_moniker == "acp" && var.database_password == "")
       ||
-      ( var.account_type == "cc" && var.manage_master_user_password == true && var.database_password == "")
+      ( var.org_moniker == "cc" && var.manage_master_user_password == true && var.database_password == "")
       ||
-      ( var.account_type == "acp" && ( var.manage_master_user_password == false || var.manage_master_user_password == null) && var.database_password != "")
+      ( var.org_moniker == "acp" && ( var.manage_master_user_password == false || var.manage_master_user_password == null) && var.database_password != "")
     )
 
     error_message = <<EOT
-For account_type="cc":
+For org_moniker="cc":
   - manage_master_user_password must be true
   - database_password must be empty
 
-For account_type="acp":
+For org_moniker="acp":
   - manage_master_user_password must be false or unset
   - database_password must be provided
 EOT

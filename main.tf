@@ -426,7 +426,7 @@ resource "aws_route53_record" "dns_excluding_dbname" {
 
 # User with access to RDS logs
 resource "aws_iam_user" "rds_logs_iam_user" {
-  count = var.account_type == "acp" && var.log_access_enabled ? 1 : 0
+  count = var.org_moniker == "acp" && var.log_access_enabled ? 1 : 0
 
   name = "${var.name}-Logs"
 
