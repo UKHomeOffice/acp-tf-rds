@@ -13,6 +13,28 @@ variable "dns_name" {
 
 variable "dns_zone" {
   description = "The required route53 domain name we are added the dns entry to i.e. example.com"
+  default     = ""
+  validation {
+    condition     = (
+	(var.org_moniker == "acp" && var.dns_zone != "")
+	||
+	(var.org_moniker == "cc")
+    )
+    error_message = "When org_moniker is 'acp', dns_zone must have a value."
+  }
+}
+
+variable "dns_zone_id" {
+  description = "The ID of the Route53 zone to use. Required when org_moniker is 'cc', otherwise optional."
+  default     = ""
+  validation {
+    condition     = (
+	(var.org_moniker == "cc" && var.dns_zone_id != "")
+	||
+	(var.org_moniker == "acp")
+    )
+    error_message = "When org_moniker is 'cc', dns_zone_id must have a value."
+  }
 }
 
 variable "database_name" {
@@ -39,16 +61,16 @@ variable "manage_master_user_password" {
 
 variable "database_password" {
   description = "The default password for the specified user for RDS"
-  type    = string
-  default = ""
+  type        = string
+  default     = ""
 
   validation {
     condition = (
-      ( var.org_moniker == "acp" && var.database_password == "")
+      (var.org_moniker == "acp" && var.database_password == "")
       ||
-      ( var.org_moniker == "cc" && var.manage_master_user_password == true && var.database_password == "")
+      (var.org_moniker == "cc" && var.manage_master_user_password == true && var.database_password == "")
       ||
-      ( var.org_moniker == "acp" && ( var.manage_master_user_password == false || var.manage_master_user_password == null) && var.database_password != "")
+      (var.org_moniker == "acp" && (var.manage_master_user_password == false || var.manage_master_user_password == null) && var.database_password != "")
     )
 
     error_message = <<EOT

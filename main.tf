@@ -54,13 +54,24 @@ locals {
   , null) : var.iops // if no option matches, return null; if not gp3, return var.iops
 }
 
-output var_dns_zone {
-  value = var.dns_zone
-}
-
 # Get the hosting zone
 data "aws_route53_zone" "selected" {
-  name = "${var.dns_zone}."
+  count = var.org_moniker == "acp" ? 1 : 0
+  # count = 0
+  name  = var.dns_zone_id == "" ? "${var.dns_zone}." : var.dns_zone
+  # name  = "dev.homeoffice.gov.uk"
+}
+
+# Validate dns_zone_id has a value when org_moniker is "cc"
+resource "null_resource" "validate_dns_zone_id" {
+  count = var.org_moniker == "cc" ? 1 : 0
+
+  lifecycle {
+    precondition {
+      condition     = var.dns_zone_id != ""
+      error_message = "When org_moniker is 'cc', dns_zone_id must have a value."
+    }
+  }
 }
 
 # Security Group used to manage access to the RDS instance
@@ -104,7 +115,7 @@ resource "aws_security_group_rule" "out_all" {
 resource "aws_db_instance" "db_including_name" {
   count = var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
 
-  db_name                                  = var.database_name
+  db_name                               = var.database_name
   allocated_storage                     = var.allocated_storage
   allow_major_version_upgrade           = var.allow_major_version_upgrade
   auto_minor_version_upgrade            = var.auto_minor_version_upgrade
@@ -250,28 +261,28 @@ resource "aws_rds_cluster" "aurora_cluster" {
   # aurora = MySQL 5.6-compatible, aurora-mysql = MySQL 5.7-compatible
   count = var.engine_type == "aurora" || var.engine_type == "aurora-mysql" || var.engine_type == "aurora-postgresql" ? 1 : 0
 
-  allow_major_version_upgrade     = var.allow_major_version_upgrade
-  apply_immediately               = var.apply_immediately
+  allow_major_version_upgrade      = var.allow_major_version_upgrade
+  apply_immediately                = var.apply_immediately
   db_instance_parameter_group_name = var.allow_major_version_upgrade ? aws_db_parameter_group.db.id : null
-  backup_retention_period         = var.backup_retention_period
-  cluster_identifier              = var.name
-  database_name                   = var.database_name
-  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.db[0].id
-  db_subnet_group_name            = local.db_subnet_group_name
-  enabled_cloudwatch_logs_exports = var.enabled_cloudwatch_logs_exports
-  engine                          = var.engine_type
-  engine_version                  = var.engine_version
-  final_snapshot_identifier       = var.name
-  master_password                 = var.database_password
-  master_username                 = var.database_user
-  port                            = var.database_port
-  preferred_backup_window         = var.backup_window
-  preferred_maintenance_window    = var.maintenance_window
-  skip_final_snapshot             = var.skip_final_snapshot
-  snapshot_identifier             = var.snapshot_identifier
-  storage_encrypted               = var.storage_encrypted
-  vpc_security_group_ids          = [aws_security_group.db.id]
-  deletion_protection             = var.deletion_protection
+  backup_retention_period          = var.backup_retention_period
+  cluster_identifier               = var.name
+  database_name                    = var.database_name
+  db_cluster_parameter_group_name  = aws_rds_cluster_parameter_group.db[0].id
+  db_subnet_group_name             = local.db_subnet_group_name
+  enabled_cloudwatch_logs_exports  = var.enabled_cloudwatch_logs_exports
+  engine                           = var.engine_type
+  engine_version                   = var.engine_version
+  final_snapshot_identifier        = var.name
+  master_password                  = var.database_password
+  master_username                  = var.database_user
+  port                             = var.database_port
+  preferred_backup_window          = var.backup_window
+  preferred_maintenance_window     = var.maintenance_window
+  skip_final_snapshot              = var.skip_final_snapshot
+  snapshot_identifier              = var.snapshot_identifier
+  storage_encrypted                = var.storage_encrypted
+  vpc_security_group_ids           = [aws_security_group.db.id]
+  deletion_protection              = var.deletion_protection
   tags = merge(
     var.tags,
     {
@@ -394,9 +405,9 @@ resource "aws_db_subnet_group" "db" {
 
 # Create a DNS name for the resource
 resource "aws_route53_record" "dns_including_dbname" {
-  count = var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
+  count = var.database_name != "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" && var.org_moniker == "acp" ? 1 : 0
 
-  zone_id = data.aws_route53_zone.selected.id
+  zone_id = data.aws_route53_zone.selected[0].id
   name    = var.dns_name == "" ? var.name : var.dns_name
   type    = var.dns_type
   ttl     = var.dns_ttl
@@ -405,9 +416,9 @@ resource "aws_route53_record" "dns_including_dbname" {
 
 # Create a DNS name for the resource
 resource "aws_route53_record" "dns_read_replica_db" {
-  count = var.replicate_source_db != "" ? 1 : 0
+  count = var.replicate_source_db != "" && var.org_moniker == "acp" ? 1 : 0
 
-  zone_id = data.aws_route53_zone.selected.id
+  zone_id = data.aws_route53_zone.selected[0].id
   name    = var.dns_name == "" ? var.name : var.dns_name
   type    = var.dns_type
   ttl     = var.dns_ttl
@@ -415,9 +426,9 @@ resource "aws_route53_record" "dns_read_replica_db" {
 }
 
 resource "aws_route53_record" "dns_excluding_dbname" {
-  count = var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" ? 1 : 0
+  count = var.database_name == "" && var.engine_type != "aurora" && var.engine_type != "aurora-mysql" && var.engine_type != "aurora-postgresql" && var.replicate_source_db == "" && var.org_moniker == "acp" ? 1 : 0
 
-  zone_id = data.aws_route53_zone.selected.id
+  zone_id = data.aws_route53_zone.selected[0].id
   name    = var.dns_name == "" ? var.name : var.dns_name
   type    = var.dns_type
   ttl     = var.dns_ttl
