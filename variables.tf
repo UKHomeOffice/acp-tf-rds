@@ -13,6 +13,28 @@ variable "dns_name" {
 
 variable "dns_zone" {
   description = "The required route53 domain name we are added the dns entry to i.e. example.com"
+  default     = ""
+  validation {
+    condition     = (
+	(var.org_moniker == "acp" && var.dns_zone != "")
+	||
+	(var.org_moniker == "cc")
+    )
+    error_message = "When org_moniker is 'acp', dns_zone must have a value."
+  }
+}
+
+variable "dns_zone_id" {
+  description = "The ID of the Route53 zone to use. Required when org_moniker is 'cc', otherwise optional."
+  default     = ""
+  validation {
+    condition     = (
+	(var.org_moniker == "cc" && var.dns_zone_id != "")
+	||
+	(var.org_moniker == "acp")
+    )
+    error_message = "When org_moniker is 'cc', dns_zone_id must have a value."
+  }
 }
 
 variable "database_name" {
@@ -25,8 +47,42 @@ variable "database_user" {
   default     = "root"
 }
 
+variable "org_moniker" {
+  description = "cc or acp. this will change key behaviour"
+  type        = string
+  default     = "acp"
+}
+
+variable "manage_master_user_password" {
+  description = "boolean for AWS to manage the RDS password - with a passed-in password or managed behind the scenes betweemn rds and secrets manager"
+  type        = bool
+  default     = false
+}
+
 variable "database_password" {
   description = "The default password for the specified user for RDS"
+  type        = string
+  default     = ""
+
+  validation {
+    condition = (
+      (var.org_moniker == "acp" && var.database_password == "")
+      ||
+      (var.org_moniker == "cc" && var.manage_master_user_password == true && var.database_password == "")
+      ||
+      (var.org_moniker == "acp" && (var.manage_master_user_password == false || var.manage_master_user_password == null) && var.database_password != "")
+    )
+
+    error_message = <<EOT
+For org_moniker="cc":
+  - manage_master_user_password must be true
+  - database_password must be empty
+
+For org_moniker="acp":
+  - manage_master_user_password must be false or unset
+  - database_password must be provided
+EOT
+  }
 }
 
 variable "database_port" {
